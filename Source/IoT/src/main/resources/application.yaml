@@ -1,0 +1,19 @@
+mqtt:
+  broker:
+    url: ssl://64742fa6b2a84cae8798c53987ca994e.s1.eu.hivemq.cloud:8883
+  client:
+    id: spring-boot-client
+  username: "phongdo"
+  password: "Phonggda123"
+  default:
+    topics: iot/data, iot/status
+spring:
+  application:
+    name: demo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/IoT
+    username: postgres
+    password : phonggda123
+  jpa:
+    hibernate:
+      ddl-auto: update
