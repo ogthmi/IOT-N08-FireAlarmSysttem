@@ -19,4 +19,10 @@ public class FirmwareVersionEntity {
     private String version;
     private int versionNumber;
     private LocalDateTime releasedAt;
+    
+    @Column(length = 500)
+    private String firmwareUrl;
+    
+    @Column(length = 1000)
+    private String description; 
 }

@@ -28,6 +28,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/users/log-in").permitAll()
                         .requestMatchers("/api/v1/users/sign-up").permitAll()
+                        .requestMatchers("/api/v1/firmware/**").permitAll()
+                        .requestMatchers("/api/mqtt/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/ws/info/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

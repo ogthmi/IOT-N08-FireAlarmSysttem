@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -39,6 +40,7 @@ public class MqttService {
     private final RuleRepository ruleRepository;
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
+    private final FirmwareUpdateRepository firmwareUpdateRepository;
 
     @ServiceActivator(inputChannel = "mqttInboundChannel")
     @Transactional
@@ -52,6 +54,13 @@ public class MqttService {
         System.out.println("Payload: " + payload);
         System.out.println("---------------------------------------------");
 
+        // Handle OTA status updates
+        if (topic.equals("iot/status")) {
+            handleStatusUpdate(payload);
+            return;
+        }
+
+        // Handle telemetry data
         TelemetryDevice telemetryDevice = objectMapper.readValue(payload, TelemetryDevice.class);
 
         if (telemetryDevice != null) {
@@ -147,5 +156,66 @@ public class MqttService {
                 "/notification",
                 notificationDTO
         );
+    }
+
+    /**
+     * Handle status updates from devices (including OTA updates)
+     */
+    private void handleStatusUpdate(String payload) throws JsonProcessingException {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> statusData = objectMapper.readValue(payload, Map.class);
+        
+        String deviceId = (String) statusData.get("deviceId");
+        String status = (String) statusData.get("status");
+        
+        System.out.println("Status update from device: " + deviceId + " - Status: " + status);
+        
+        // Check if it's an OTA update status
+        if (status != null && (status.equals("IN_PROGRESS") || 
+                               status.equals("COMPLETED") || 
+                               status.equals("FAILED") ||
+                               status.equals("SKIPPED"))) {
+            Integer progress = statusData.get("progress") != null 
+                ? (Integer) statusData.get("progress") 
+                : 0;
+            
+            updateOTAStatus(deviceId, status, progress);
+        }
+    }
+
+    /**
+     * Update OTA status directly (to avoid circular dependency)
+     */
+    @Transactional
+    public void updateOTAStatus(String deviceId, String status, Integer progress) {
+        FirmwareUpdateEntity update = firmwareUpdateRepository
+                .findByDeviceIdAndStatus(deviceId, "IN_PROGRESS")
+                .orElse(null);
+
+        if (update != null) {
+            update.setStatus(status);
+            
+            if ("COMPLETED".equals(status) || "FAILED".equals(status)) {
+                update.setEndTime(LocalDateTime.now());
+            }
+
+            firmwareUpdateRepository.save(update);
+
+            // Send notification via WebSocket
+            DeviceEntity device = deviceRepository.findByDeviceId(deviceId);
+            if (device != null) {
+                Map<String, Object> notification = new HashMap<>();
+                notification.put("deviceId", deviceId);
+                notification.put("status", status);
+                notification.put("progress", progress);
+                notification.put("updateId", update.getId());
+                
+                messagingTemplate.convertAndSendToUser(
+                        device.getUserId().toString(),
+                        "/firmware",
+                        notification
+                );
+            }
+        }
     }
 }
