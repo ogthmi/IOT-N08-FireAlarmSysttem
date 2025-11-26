@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">26.136.76.251</domain>
+        <trust-anchors>
+            <!-- Trust system certificates -->
+            <certificates src="system" />
+            <!-- Trust user certificates (self-signed) -->
+            <certificates src="user" />
+            <!-- Trust custom certificate từ raw folder -->
+            <certificates src="@raw/server_cert"/>
+        </trust-anchors>
+    </domain-config>
+    <!-- Base config cho phép cleartext traffic -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">FireAlarm</string>
+    <string name="home">Trang chủ</string>
+    <string name="control">Điều khiển</string>
+    <string name="statistic">Thống kê</string>
+    <string name="call">Gọi</string>
+    <string name="_114">114</string>
+    <string name="khi_b_n_th_y_s_c_ch_y_tai_n_n">Khi bạn thấy sự cố cháy, tai nạn?</string>
+    <string name="nh_n_g_i_114_b_o_cho_l_c_l_ng_c_nh_s_t_pccc_v_cnch">Nhấn gọi *114* để báo cho lực lượng Cảnh sát PCCC và CNCH</string>
+    <string name="b_ng_i_u_khi_n">Bảng điều khiển</string>
+    <string name="nhi_t">Nhiệt độ (°C)</string>
+    <string name="m">Độ ẩm (% RH)</string>
+    <string name="c_m_bi_n_l_a">Cảm biến lửa (ADC)</string>
+    <string name="n_ng_kh_i_adc">Nồng độ khói (ADC)</string>
+    <string name="c_i_b_o">Còi báo</string>
+    <string name="i_u_ch_nh_ng_ng_b_o_ch_y">Điều chỉnh ngưỡng báo cháy</string>
+    <string name="m_y_b_m">Máy bơm</string>
+    <string name="e_g_30">e.g. 30</string>
+    <string name="e_g_80">e.g. 80</string>
+    <string name="e_g_4095">e.g. 4095</string>
+    <string name="e_g_592">e.g. 592</string>
+    <string name="l_u_thi_t_l_p">Lưu thiết lập</string>
+    <string name="h_y">Hủy</string>
+    <string name="s_d_ng_gi_tr_m_c_nh">Sử dụng giá trị mặc định</string>
+</resources>
