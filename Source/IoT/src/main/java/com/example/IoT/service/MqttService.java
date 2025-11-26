@@ -62,7 +62,7 @@ public class MqttService {
                     UserEntity userEntity = userRepository.findById(
                             deviceRepository.findByDeviceId(telemetryDevice.getDeviceId()).getUserId()
                     ).orElseThrow(
-                            () -> new AppException(ErrorCode.UNIT_NOT_FOUND)
+                            () -> new AppException(ErrorCode.USER_NOT_EXISTED)
                     );
 
                     CompletableFuture.runAsync(() -> {
