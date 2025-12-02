@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_nav_graph"
+    app:startDestination="@id/userListFragment">
+
+    <fragment
+        android:id="@+id/firmwareListFragment"
+        android:name="com.example.firealarm.presentation.ui.admin.firmware.FirmwareListFragment"
+        android:label="fragment_firmware_list"
+        tools:layout="@layout/fragment_firmware_list" />
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="com.example.firealarm.presentation.ui.admin.user.UserListFragment"
+        android:label="fragment_user_list"
+        tools:layout="@layout/fragment_user_list" >
+        <action
+            android:id="@+id/action_userListFragment_to_createDeviceFragment"
+            app:destination="@id/createDeviceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createDeviceFragment"
+        android:name="com.example.firealarm.presentation.ui.admin.user.create.CreateDeviceFragment"
+        android:label="fragment_create_device"
+        tools:layout="@layout/fragment_create_device" />
+</navigation>

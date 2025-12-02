@@ -1,19 +1,10 @@
 package com.example.firealarm.presentation
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
 import android.os.Vibrator
-import android.os.VibratorManager
-import android.util.Log
-import android.view.View
-import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,8 +16,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.firealarm.R
 import com.example.firealarm.databinding.ActivityMainBinding
-import com.example.firealarm.service.FireAlarmMonitoringService
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -63,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
+        navController.setGraph(R.navigation.auth_nav_graph)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -89,6 +79,20 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun switchToMainUserGraph() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.setGraph(R.navigation.user_nav_graph)
+    }
+
+    fun switchToMainAdminGraph(){
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.setGraph(R.navigation.admin_nav_graph)
     }
 
     override fun onDestroy() {

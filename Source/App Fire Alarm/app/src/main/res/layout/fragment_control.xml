@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.ui.control.ControlFragment"
+    tools:context=".presentation.ui.user.control.ControlFragment"
     android:background="@color/background">
 
     <TextView
@@ -210,6 +210,12 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
+                <ProgressBar
+                    android:id="@+id/alarmLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -256,6 +262,12 @@
                         android:textColor="@color/text_primary"
                         android:textStyle="bold" />
                 </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/pumpLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

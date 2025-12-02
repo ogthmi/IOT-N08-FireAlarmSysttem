@@ -4,44 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.ui.user.control.AdjustThresholdFragment"
-    android:background="@color/background"
-    >
-
-    <View
-        android:id="@+id/closeBtn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ic_close"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.03"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintVertical_bias="0.03"/>
+    tools:context=".presentation.ui.login.LoginFragment"
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/i_u_ch_nh_ng_ng_b_o_ch_y"
+        android:text="@string/ng_nh_p"
         android:textColor="@color/text_primary"
         android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/closeBtn"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.01"
+        app:layout_constraintVertical_bias="0.1"
         app:layout_constraintHeight_percent="0.1"
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="@id/guideline1"
         app:layout_constraintEnd_toEndOf="@id/guideline2"/>
 
-    <!-- Fire -->
+    <!-- Username -->
     <TextView
-        android:id="@+id/titleFire"
+        android:id="@+id/titleUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/c_m_bi_n_l_a"
+        android:text="@string/username"
         android:textColor="@color/text_primary"
         android:textStyle="bold"
         android:gravity="start"
@@ -53,10 +40,10 @@
         android:layout_marginHorizontal="20sp"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputFireLayout"
+        android:id="@+id/inputUsernameLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/titleFire"
+        app:layout_constraintTop_toBottomOf="@id/titleUsername"
         app:layout_constraintStart_toStartOf="@id/guideline1"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         android:layout_marginTop="10dp"
@@ -64,11 +51,11 @@
         app:helperTextTextColor="@color/red">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputFire"
+            android:id="@+id/inputUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:hint="@string/e_g_4095"
+            android:inputType="text"
+            android:hint="@string/e_g_abc"
             android:background="@drawable/input"
             android:padding="15sp"
             android:textColor="@color/text_primary"
@@ -76,16 +63,16 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Smoke -->
+    <!-- Password -->
     <TextView
-        android:id="@+id/titleSmoke"
+        android:id="@+id/titlePassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/n_ng_kh_i_adc"
+        android:text="@string/password"
         android:textColor="@color/text_primary"
         android:textStyle="bold"
         android:gravity="start"
-        app:layout_constraintTop_toBottomOf="@id/inputFireLayout"
+        app:layout_constraintTop_toBottomOf="@id/inputUsernameLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.01"
         app:layout_constraintHeight_percent="0.1"
@@ -93,10 +80,10 @@
         android:layout_marginHorizontal="20sp"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputSmokeLayout"
+        android:id="@+id/inputPasswordLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/titleSmoke"
+        app:layout_constraintTop_toBottomOf="@id/titlePassword"
         app:layout_constraintStart_toStartOf="@id/guideline1"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         android:layout_marginTop="10dp"
@@ -104,11 +91,11 @@
         app:helperTextTextColor="@color/red">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputSmoke"
+            android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:hint="@string/e_g_592"
+            android:inputType="text"
+            android:hint="@string/e_g_abc"
             android:textColorHint="@color/text_secondary"
             android:background="@drawable/input"
             android:padding="15sp"
@@ -116,78 +103,28 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/setDefaultBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/inputSmokeLayout"
-        app:layout_constraintStart_toStartOf="@id/guideline1"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        android:orientation="horizontal"
-        android:layout_marginTop="20sp">
-
-        <CheckBox
-            android:id="@+id/checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:scaleX="1.3"
-            android:scaleY="1.3"
-            android:checked="false"
-            android:buttonTint="@color/main"
-            android:layout_marginEnd="10sp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/s_d_ng_gi_tr_m_c_nh"
-            android:textColor="@color/main"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:textSize="16sp"/>
-
-    </LinearLayout>
-
-    <!-- Cancel button -->
+    <!-- Login button -->
     <Button
-        android:id="@+id/btnCancel"
+        android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/h_y"
+        android:text="@string/ng_nh_p"
         android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:background="@drawable/control_item"
-        app:layout_constraintTop_toBottomOf="@id/setDefaultBtn"
+        android:textColor="@color/white"
+        android:background="@drawable/button_blur"
+        app:layout_constraintTop_toBottomOf="@id/inputPasswordLayout"
         app:layout_constraintStart_toStartOf="@id/guideline1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         android:layout_marginTop="30dp"
         android:textSize="16sp"
-        app:layout_constraintWidth_percent="0.4"
         app:layout_constraintVertical_bias="0.02"
         app:layout_constraintHorizontal_bias="0"/>
-
-    <!-- Save button -->
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/l_u_thi_t_l_p"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:background="@drawable/button_blur"
-        app:layout_constraintTop_toTopOf="@id/btnCancel"
-        app:layout_constraintStart_toStartOf="@id/guideline1"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintBottom_toBottomOf="@id/btnCancel"
-        app:layout_constraintWidth_percent="0.4"
-        app:layout_constraintHorizontal_bias="1"/>
 
     <ProgressBar
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/btnSave"
+        app:layout_constraintTop_toBottomOf="@id/btnLogin"
         app:layout_constraintStart_toStartOf="@id/guideline1"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         android:layout_marginTop="20sp"
