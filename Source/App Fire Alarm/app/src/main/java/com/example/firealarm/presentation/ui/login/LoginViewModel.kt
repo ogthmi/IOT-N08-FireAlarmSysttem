@@ -14,10 +14,10 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase
 ): ViewModel() {
-    
+
     private val _loginState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val loginState: StateFlow<NetworkState> get() = _loginState
-    
+
     fun login(username: String, password: String) {
         _loginState.value = NetworkState.Loading
         viewModelScope.launch {

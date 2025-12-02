@@ -30,7 +30,7 @@ class FirmwareListFragment : Fragment() {
     private val viewModel: FirmwareListViewModel by viewModels()
     private lateinit var firmwareAdapter: FirmwareAdapter
     private lateinit var listFirmware: List<Firmware>
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,7 +47,7 @@ class FirmwareListFragment : Fragment() {
         setupRecyclerView()
         setupSearchView()
         setupObservers()
-        
+
         binding.addFirmware.setOnClickListener {
             findNavController().navigate(FirmwareListFragmentDirections.actionFirmwareListFragmentToCreateFirmwareFragment(0, "", 0, "", false))
         }
@@ -72,7 +72,7 @@ class FirmwareListFragment : Fragment() {
         }
     }
 
-    
+
     private fun setupRecyclerView() {
         firmwareAdapter = FirmwareAdapter(
             onItemClick = { firmware ->
@@ -129,7 +129,7 @@ class FirmwareListFragment : Fragment() {
             adapter = firmwareAdapter
         }
     }
-    
+
     private fun setupObservers() {
         viewModel.loadFirmwareList()
         viewLifecycleOwner.lifecycleScope.launch {

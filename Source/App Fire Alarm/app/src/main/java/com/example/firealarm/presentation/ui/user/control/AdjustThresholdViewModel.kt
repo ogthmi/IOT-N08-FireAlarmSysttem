@@ -22,14 +22,14 @@ class AdjustThresholdViewModel @Inject constructor(
     private val getThresholdUseCase: GetThresholdUseCase,
     private val setThresholdUseCase: SetThresholdUseCase
 ) : ViewModel() {
-    
+
     private val _thresholdState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val thresholdState: StateFlow<NetworkState> = _thresholdState.asStateFlow()
-    
+
     private val _updateState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val updateState: StateFlow<NetworkState> = _updateState.asStateFlow()
 
-    
+
     fun loadThresholds() {
         viewModelScope.launch {
             _thresholdState.value = NetworkState.Loading
@@ -38,7 +38,7 @@ class AdjustThresholdViewModel @Inject constructor(
                 _thresholdState.value = NetworkState.Error("Chưa chọn thiết bị")
                 return@launch
             }
-            
+
             // Extract deviceId từ format "device-{id}" nếu có
             val actualDeviceId = if (deviceId.contains("-")) {
                 deviceId.split("-")[1].trim()
@@ -51,7 +51,7 @@ class AdjustThresholdViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun updateThresholds(fireThreshold: Double, smokeThreshold: Double) {
         viewModelScope.launch {
             val deviceId = AppPreferences.getDeviceId()
@@ -59,14 +59,14 @@ class AdjustThresholdViewModel @Inject constructor(
                 _updateState.value = NetworkState.Error("Chưa chọn thiết bị")
                 return@launch
             }
-            
+
             // Extract deviceId từ format "device-{id}" nếu có
             val actualDeviceId = if (deviceId.contains("-")) {
                 deviceId.split("-")[1].trim()
             } else {
                 deviceId
             }
-            
+
             val thresholds = listOf(
                 Threshold(
                     sensorName = "MHS",
@@ -79,7 +79,7 @@ class AdjustThresholdViewModel @Inject constructor(
                     threshold = smokeThreshold
                 )
             )
-            
+
            setThresholdUseCase.execute(actualDeviceId, thresholds).collect { state ->
                 _updateState.value = state
             }

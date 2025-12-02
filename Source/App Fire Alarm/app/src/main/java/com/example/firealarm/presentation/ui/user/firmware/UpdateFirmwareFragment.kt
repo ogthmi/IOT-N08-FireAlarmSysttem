@@ -130,7 +130,7 @@ class UpdateFirmwareFragment : Fragment() {
 
     private fun loadOtaHistory() {
         if (deviceId.isNullOrEmpty()) return
-        
+
         viewModel.loadOtaHistory(deviceId!!)
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.otaHistoryState.collect { state ->
@@ -160,7 +160,7 @@ class UpdateFirmwareFragment : Fragment() {
 
         val completedUpdates = historyList.filter { it.status == "COMPLETED" }
         val latestCompletedUpdate = completedUpdates.maxByOrNull { it.id }
-        
+
         if (latestCompletedUpdate != null) {
             binding.valueFirmwareCurrent.text = latestCompletedUpdate.nextVersion
         } else {

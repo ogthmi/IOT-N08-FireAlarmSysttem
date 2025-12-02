@@ -40,7 +40,7 @@ class StatisticFragment : Fragment() {
     private val viewModel: StatisticViewModel by viewModels()
     private var deviceId: String? = null
     private var currentTab: Int = 0 // 0: Sensor, 1: Notification
-    
+
     companion object {
         // Giới hạn số điểm dữ liệu tối đa hiển thị trên biểu đồ
         private const val MAX_DATA_POINTS = 120
@@ -65,7 +65,7 @@ class StatisticFragment : Fragment() {
 
     private fun init() {
         deviceId = AppPreferences.getDeviceId()?.trim()?.split("-")?.getOrNull(1)?.trim()
-        
+
         if (deviceId.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "Device ID not found", Toast.LENGTH_SHORT).show()
             return
@@ -146,7 +146,7 @@ class StatisticFragment : Fragment() {
                         if (data != null && data.result != null) {
                             val fireNotifications = data.result.fireNotifications.map { it.notificationToDomain() }
                             val smokeNotifications = data.result.smokeNotifications.map { it.notificationToDomain() }
-                            
+
                             if (currentTab == 1) {
                                 displayNotificationCharts(fireNotifications, smokeNotifications)
                             }
@@ -257,7 +257,7 @@ class StatisticFragment : Fragment() {
         } else {
             Pair(values, labels)
         }
-        
+
         val entries = limitedValues.mapIndexed { index, value ->
             Entry(index.toFloat(), value)
         }
@@ -302,7 +302,7 @@ class StatisticFragment : Fragment() {
                 }
             }
         }
-        
+
         // Giới hạn số label hiển thị trên trục X để tránh chồng chéo
         xAxis.setLabelCount(minOf(limitedLabels.size, 10), true)
 

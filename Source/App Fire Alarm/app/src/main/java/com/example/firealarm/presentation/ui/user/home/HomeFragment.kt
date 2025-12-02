@@ -37,16 +37,16 @@ class HomeFragment : Fragment() {
         activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.VISIBLE
 
         setupHeader()
-        
+
         binding.btnCallRoot.setOnClickListener {
             requestPermission()
         }
     }
-    
+
     private fun setupHeader() {
         val username = AppPreferences.getUsername()
         binding.textUsername.text = username ?: "Unknown User"
-        
+
         // Lấy device ID từ SharedPreferences
         val deviceId = AppPreferences.getDeviceId()
         if (deviceId != null) {

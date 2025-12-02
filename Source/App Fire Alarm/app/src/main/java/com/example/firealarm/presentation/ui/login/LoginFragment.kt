@@ -30,7 +30,7 @@ class LoginFragment : Fragment() {
     private val viewModel: LoginViewModel by viewModels()
     private val TAG = "LoginFragment"
     private var hasNavigated = false
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,7 +72,7 @@ class LoginFragment : Fragment() {
                 if (hasNavigated) {
                     return@collect
                 }
-                
+
                 when (state) {
                     is NetworkState.Init, is NetworkState.Loading -> {
                         binding.btnLogin.isEnabled = false
@@ -83,7 +83,7 @@ class LoginFragment : Fragment() {
                         if (!isAdded || !isResumed) {
                             return@collect
                         }
-                        
+
                         binding.btnLogin.isEnabled = true
                         binding.loading.visibility = View.GONE
                         Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_SHORT).show()
@@ -142,7 +142,7 @@ class LoginFragment : Fragment() {
             binding.btnLogin.isEnabled = false
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

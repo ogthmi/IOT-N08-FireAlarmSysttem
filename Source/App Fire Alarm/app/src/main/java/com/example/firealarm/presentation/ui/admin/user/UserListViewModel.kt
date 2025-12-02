@@ -19,13 +19,13 @@ class UserListViewModel @Inject constructor(
     private val getListUserUseCase: GetListUserUseCase,
     private val deteteUserUseCase: DeleteUserUseCase
 ): ViewModel() {
-    
+
     private val _usersState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val usersState: StateFlow<NetworkState> = _usersState.asStateFlow()
 
     private val _deleteState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val deleteState: StateFlow<NetworkState> = _deleteState.asStateFlow()
-    
+
     fun loadUsers() {
         viewModelScope.launch {
             _usersState.value = NetworkState.Loading
@@ -34,7 +34,7 @@ class UserListViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun deleteUser(userId: Int) {
         viewModelScope.launch {
             _deleteState.value = NetworkState.Loading

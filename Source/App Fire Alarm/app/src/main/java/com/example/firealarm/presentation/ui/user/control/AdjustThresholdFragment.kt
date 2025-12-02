@@ -79,7 +79,7 @@ class AdjustThresholdFragment : Fragment() {
         }
 
     }
-    
+
     private fun init() {
         // Observe threshold state
         viewModel.loadThresholds()

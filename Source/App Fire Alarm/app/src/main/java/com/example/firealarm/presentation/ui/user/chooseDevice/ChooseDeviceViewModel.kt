@@ -15,10 +15,10 @@ import javax.inject.Inject
 class ChooseDeviceViewModel @Inject constructor(
     private val getDevicesUseCase: GetDevicesUseCase
 ) : ViewModel() {
-    
+
     private val _devicesState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val devicesState: StateFlow<NetworkState> get() = _devicesState
-    
+
     fun loadDevices() {
         _devicesState.value = NetworkState.Loading
         viewModelScope.launch {

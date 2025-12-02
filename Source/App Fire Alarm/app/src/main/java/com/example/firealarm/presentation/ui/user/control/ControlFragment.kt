@@ -63,14 +63,14 @@ class ControlFragment : Fragment() {
         deviceId = AppPreferences.getDeviceId()?.split("-")[1]?.trim() ?: ""
         // Tạo notification channel
         context?.let { NotificationHelper.createNotificationChannel(it) }
-        
+
         // Observe telemetry data từ WebSocket
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.telemetryData.collect { data ->
                 updateSensorDisplay(data)
             }
         }
-        
+
         // Observe notification từ WebSocket
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.notificationData.collect { notificationMessage ->
@@ -81,7 +81,7 @@ class ControlFragment : Fragment() {
                 }
             }
         }
-        
+
         // Observe connection status
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.connectionStatus.collect { isConnected ->
@@ -95,18 +95,18 @@ class ControlFragment : Fragment() {
             }
         }
     }
-    
+
     private fun showNotificationFromWebSocket(message: String) {
         context?.let { context ->
             try {
                 val notificationText = parseNotificationMessage(message)
-                
+
                 // Hiển thị notification
                 NotificationHelper.showFireAlert(
                     context,
                     notificationText
                 )
-                
+
                 Log.d("ControlFragment", "Notification received from WebSocket: $message")
             } catch (e: Exception) {
                 Log.e("ControlFragment", "Error showing notification: ${e.message}", e)
@@ -115,7 +115,7 @@ class ControlFragment : Fragment() {
             }
         }
     }
-    
+
     private fun parseNotificationMessage(message: String): String {
         return try {
             // Thử parse JSON nếu message là JSON
@@ -132,7 +132,7 @@ class ControlFragment : Fragment() {
                         val type = if (json.has("type")) json.getString("type") else ""
                         val alertType = if (json.has("alertType")) json.getString("alertType") else ""
                         val value = if (json.has("value")) json.getString("value") else ""
-                        
+
                         when {
                             type.equals("FIRE", ignoreCase = true) || alertType.equals("FIRE", ignoreCase = true) -> {
                                 "🚨 PHÁT HIỆN CHÁY! $value"

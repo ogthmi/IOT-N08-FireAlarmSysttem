@@ -17,7 +17,7 @@ class StatisticViewModel @Inject constructor(
     private val getSensorStatisticsUseCase: GetSensorStatisticsUseCase,
     private val getNotificationStatisticsUseCase: GetNotificationStatisticsUseCase
 ) : ViewModel() {
-    
+
     private val _sensorStatisticState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val sensorStatisticState: StateFlow<NetworkState> = _sensorStatisticState.asStateFlow()
 

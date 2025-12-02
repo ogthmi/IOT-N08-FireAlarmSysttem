@@ -32,7 +32,7 @@ class UserListFragment : Fragment() {
     private val viewModel: UserListViewModel by viewModels()
     private lateinit var userAdapter: UserAdapter
     private lateinit var listUser: List<UserInfo>
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,7 +49,7 @@ class UserListFragment : Fragment() {
         setupRecyclerView()
         setupSearchView()
         setupObservers()
-        
+
         binding.addDevice.setOnClickListener {
             findNavController().navigate(UserListFragmentDirections.actionUserListFragmentToCreateUserFragment(
                 false))
@@ -74,7 +74,7 @@ class UserListFragment : Fragment() {
                 }.show()
         }
     }
-    
+
     private fun setupRecyclerView() {
         userAdapter = UserAdapter(
             onItemClick = { user ->
@@ -112,7 +112,7 @@ class UserListFragment : Fragment() {
             adapter = userAdapter
         }
     }
-    
+
     private fun setupSearchView() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -125,7 +125,7 @@ class UserListFragment : Fragment() {
             }
         })
     }
-    
+
     private fun filterUsers(query: String) {
         val filtered = if (query.isBlank()) {
             listUser
@@ -136,7 +136,7 @@ class UserListFragment : Fragment() {
         }
         userAdapter.submitList(filtered)
     }
-    
+
     private fun setupObservers() {
         viewModel.loadUsers()
         viewLifecycleOwner.lifecycleScope.launch {

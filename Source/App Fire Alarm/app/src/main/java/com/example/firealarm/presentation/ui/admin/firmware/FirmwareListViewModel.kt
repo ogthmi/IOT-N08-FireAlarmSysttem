@@ -17,13 +17,13 @@ class FirmwareListViewModel @Inject constructor(
     private val getFirmwareListUseCase: GetFirmwareListUseCase,
     private val deleteFirmwareUseCase: DeleteFirmwareUseCase
 ): ViewModel() {
-    
+
     private val _firmwareState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val firmwareState: StateFlow<NetworkState> = _firmwareState.asStateFlow()
 
     private val _deleteState = MutableStateFlow<NetworkState>(NetworkState.Init)
     val deleteState: StateFlow<NetworkState> = _deleteState.asStateFlow()
-    
+
     fun loadFirmwareList() {
         viewModelScope.launch {
             _firmwareState.value = NetworkState.Loading

@@ -28,25 +28,25 @@ class ControlViewModel @Inject constructor(
     private val setPumpStateUseCase: SetPumpStateUseCase,
     private val webViewStompManager: WebViewStompManager
 ): ViewModel() {
-    
+
     private val _telemetryData = MutableStateFlow<List<Telemetry>>(emptyList())
     val telemetryData: StateFlow<List<Telemetry>> = _telemetryData.asStateFlow()
-    
+
     private val _connectionStatus = MutableStateFlow(false)
     val connectionStatus: StateFlow<Boolean> = _connectionStatus.asStateFlow()
-    
+
     private val _notificationData = MutableStateFlow<String?>(null)
     val notificationData: StateFlow<String?> = _notificationData.asStateFlow()
-    
+
     private var currentDeviceId: String? = null
 
     private val _statusData = MutableStateFlow(Status())
     val statusData: Flow<Status> = _statusData
-    
+
     init {
         setupWebSocket()
     }
-    
+
     private fun setupWebSocket() {
         // Lấy deviceId từ SharedPreferences
         val device = AppPreferences.getDeviceId()
@@ -55,26 +55,26 @@ class ControlViewModel @Inject constructor(
         webViewStompManager.setTelemetryCallback { telemetryList ->
             // Filter data theo deviceId hiện tại
             val filteredData = telemetryList.filter { it.deviceId == currentDeviceId }
-            
+
             if (filteredData.isNotEmpty()) {
                 _telemetryData.value = filteredData
             }
         }
-        
+
         // Setup callback để nhận connection status
         webViewStompManager.setConnectionStatusCallback { isConnected ->
             _connectionStatus.value = isConnected
         }
-        
+
         // Setup callback để nhận notification từ WebSocket
         webViewStompManager.setNotificationCallback { message ->
             _notificationData.value = message
         }
-        
+
         // Connect WebSocket
         connectWebSocket()
     }
-    
+
     fun connectWebSocket() {
         if (!webViewStompManager.isConnected()) {
             webViewStompManager.connect()
@@ -85,7 +85,7 @@ class ControlViewModel @Inject constructor(
         webViewStompManager.disconnect()
         _connectionStatus.value = false
     }
-    
+
     override fun onCleared() {
         super.onCleared()
         disconnectWebSocket()
@@ -120,7 +120,7 @@ class ControlViewModel @Inject constructor(
             )
         }
     }
-    
+
     fun clearNotification() {
         _notificationData.value = null
     }
