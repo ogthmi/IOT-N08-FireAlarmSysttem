@@ -22,4 +22,20 @@
     <string name="l_u_thi_t_l_p">Lưu thiết lập</string>
     <string name="h_y">Hủy</string>
     <string name="s_d_ng_gi_tr_m_c_nh">Sử dụng giá trị mặc định</string>
+    <string name="c_i_t">Cài đặt</string>
+    <string name="ng_nh_p">Đăng nhập</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="e_g_abc">e.g.abc</string>
+    <string name="ch_o_m_ng_n_v_i_ng_d_ng_c_nh_b_o_ch_y">Chào mừng đến với ứng dụng cảnh báo cháy!</string>
+    <string name="vui_l_ng_ch_n_thi_t_b">Vui lòng chọn thiết bị</string>
+    <string name="ti_p_t_c">Tiếp tục</string>
+    <string name="thay_i_thi_t_b">Thay đổi thiết bị</string>
+    <string name="c_p_nh_t_firmware">Cập nhật firmware</string>
+    <string name="ng_xu_t">Đăng xuất</string>
+    <string name="thi_t_b">Thiết bị</string>
+    <string name="phi_n_ba_firmware_hi_n_t_i">Phiên bản firmware hiện tại</string>
+    <string name="ng_i_d_ng">Người dùng</string>
+    <string name="firmware">Firmware</string>
+    <string name="danh_s_ch_ng_i_d_ng">Danh sách người dùng</string>
 </resources>

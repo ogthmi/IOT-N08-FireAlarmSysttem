@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.firealarm.presentation.ui.user.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/controlFragment"
+        android:name="com.example.firealarm.presentation.ui.user.control.ControlFragment"
+        android:label="fragment_control"
+        tools:layout="@layout/fragment_control" >
+        <action
+            android:id="@+id/action_controlFragment_to_adjustThresholdFragment"
+            app:destination="@id/adjustThresholdFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/statisticFragment"
+        android:name="com.example.firealarm.presentation.ui.user.statistic.StatisticFragment"
+        android:label="fragment_statistic"
+        tools:layout="@layout/fragment_statistic" />
+    <fragment
+        android:id="@+id/adjustThresholdFragment"
+        android:name="com.example.firealarm.presentation.ui.user.control.AdjustThresholdFragment"
+        android:label="fragment_adjust_threshold"
+        tools:layout="@layout/fragment_adjust_threshold" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.firealarm.presentation.ui.user.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_chooseDeviceFragment2"
+            app:destination="@id/chooseDeviceFragment2" />
+        <action
+            android:id="@+id/action_settingFragment_to_updateFirmwareFragment"
+            app:destination="@id/updateFirmwareFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseDeviceFragment2"
+        android:name="com.example.firealarm.presentation.ui.user.chooseDevice.ChooseDeviceFragment"
+        android:label="fragment_choose_device"
+        tools:layout="@layout/fragment_choose_device" >
+        <argument
+            android:name="mes"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_chooseDeviceFragment2_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateFirmwareFragment"
+        android:name="com.example.firealarm.presentation.ui.user.firmware.UpdateFirmwareFragment"
+        android:label="fragment_update_firmware"
+        tools:layout="@layout/fragment_update_firmware" />
+</navigation>

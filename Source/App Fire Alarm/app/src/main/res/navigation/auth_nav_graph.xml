@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_nav_grpah"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.firealarm.presentation.ui.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_chooseDeviceFragment"
+            app:destination="@id/chooseDeviceFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_admin_nav_graph"
+            app:destination="@id/admin_nav_graph" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseDeviceFragment"
+        android:name="com.example.firealarm.presentation.ui.user.chooseDevice.ChooseDeviceFragment"
+        android:label="fragment_choose_device"
+        tools:layout="@layout/fragment_choose_device" >
+        <argument
+            android:name="mes"
+            app:argType="string" />
+    </fragment>
+    <include app:graph="@navigation/admin_nav_graph" />
+</navigation>
