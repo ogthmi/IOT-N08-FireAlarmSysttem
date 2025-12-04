@@ -17,6 +17,6 @@
 
     <item
         android:icon="@drawable/ic_setting"
-        android:title="@string/c_i_t"
+        android:title="@string/setting"
         android:id="@+id/settingFragment"/>
 </menu>

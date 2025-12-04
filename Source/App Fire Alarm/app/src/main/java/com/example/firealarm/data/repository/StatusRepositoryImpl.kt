@@ -2,11 +2,8 @@ package com.example.firealarm.data.repository
 
 import com.example.firealarm.data.api.ApiService
 import com.example.firealarm.data.model.ControlRequest
-import com.example.firealarm.data.model.SensorDto
 import com.example.firealarm.data.model.StatusDto
-import com.example.firealarm.domain.model.Sensor
 import com.example.firealarm.domain.model.Status
-import com.example.firealarm.domain.repository.SensorRepository
 import com.example.firealarm.domain.repository.StatusRepository
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener

@@ -1,6 +1,5 @@
 package com.example.firealarm.data.model
 
-import com.example.firealarm.domain.model.Sensor
 import com.example.firealarm.domain.model.Status
 
 class StatusDto(

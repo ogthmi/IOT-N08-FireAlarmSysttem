@@ -16,12 +16,81 @@
         android:label="fragment_user_list"
         tools:layout="@layout/fragment_user_list" >
         <action
-            android:id="@+id/action_userListFragment_to_createDeviceFragment"
+            android:id="@+id/action_userListFragment_to_createUserFragment"
+            app:destination="@id/createUserFragment" />
+        <action
+            android:id="@+id/action_userListFragment_to_listDeviceFragment"
+            app:destination="@id/listDeviceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createUserFragment"
+        android:name="com.example.firealarm.presentation.ui.admin.user.create.CreateUserFragment"
+        android:label="fragment_create_user"
+        tools:layout="@layout/fragment_create_user" >
+        <argument
+            android:name="edit"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/listDeviceFragment"
+        android:name="com.example.firealarm.presentation.ui.admin.device.ListDeviceFragment"
+        android:label="fragment_list_device"
+        tools:layout="@layout/fragment_list_device" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_listDeviceFragment_to_createDeviceFragment2"
             app:destination="@id/createDeviceFragment" />
+        <action
+            android:id="@+id/action_listDeviceFragment_to_deviceDetailFragment2"
+            app:destination="@id/deviceDetailFragment2" />
     </fragment>
     <fragment
         android:id="@+id/createDeviceFragment"
-        android:name="com.example.firealarm.presentation.ui.admin.user.create.CreateDeviceFragment"
+        android:name="com.example.firealarm.presentation.ui.admin.device.create.CreateDeviceFragment"
         android:label="fragment_create_device"
-        tools:layout="@layout/fragment_create_device" />
+        tools:layout="@layout/fragment_create_device" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <argument
+            android:name="deviceId"
+            app:argType="string" />
+        <argument
+            android:name="deviceName"
+            app:argType="string" />
+        <argument
+            android:name="des"
+            app:argType="string" />
+        <argument
+            android:name="fireThreshold"
+            app:argType="float" />
+        <argument
+            android:name="smokeThreshold"
+            app:argType="float" />
+        <argument
+            android:name="edit"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/deviceDetailFragment2"
+        android:name="com.example.firealarm.presentation.ui.admin.device.detail.DeviceDetailFragment"
+        android:label="DeviceDetailFragment" >
+        <argument
+            android:name="deviceId"
+            app:argType="string" />
+        <argument
+            android:name="deviceName"
+            app:argType="string" />
+        <argument
+            android:name="description"
+            app:argType="string" />
+        <argument
+            android:name="fireThreshold"
+            app:argType="float" />
+        <argument
+            android:name="smokeThreshold"
+            app:argType="float" />
+    </fragment>
 </navigation>
