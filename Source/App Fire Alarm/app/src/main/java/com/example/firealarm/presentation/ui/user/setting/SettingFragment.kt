@@ -1,5 +1,6 @@
 package com.example.firealarm.presentation.ui.user.setting
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.example.firealarm.R
 import com.example.firealarm.databinding.FragmentSettingBinding
+import com.example.firealarm.presentation.ui.user.setting.SettingFragmentDirections
+import com.example.firealarm.presentation.utils.AppPreferences
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -32,6 +35,14 @@ class SettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.VISIBLE
 
+        binding.changeInfo.setOnClickListener {
+            findNavController().navigate(
+                SettingFragmentDirections.actionSettingFragmentToCreateUserFragment2(
+                    true
+                )
+            )
+        }
+
         binding.changeDevice.setOnClickListener {
             findNavController().navigate(SettingFragmentDirections.actionSettingFragmentToChooseDeviceFragment2("fromSetting"))
         }
@@ -41,13 +52,22 @@ class SettingFragment : Fragment() {
         }
 
         binding.logout.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                delay(3000)
-            }
+            AppPreferences.saveToken("")
+            AlertDialog.Builder(context)
+                .setTitle("Logout")
+                .setMessage("Are you want to logout")
+                .setPositiveButton("Logout") { dialog, _ ->
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        delay(3000)
+                    }
 
-            val navController = findNavController()
-            navController.setGraph(R.navigation.auth_nav_graph)
-
+                    val navController = findNavController()
+                    navController.setGraph(R.navigation.auth_nav_graph)
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }.show()
         }
     }
     

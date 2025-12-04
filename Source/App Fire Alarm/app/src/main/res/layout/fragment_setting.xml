@@ -11,7 +11,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/c_i_t"
+        android:text="@string/settings"
         android:textColor="@color/text_primary"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,6 +32,39 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/changeInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10sp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_information"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:gravity="start"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                app:layout_constraintTop_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                android:background="@drawable/ic_user" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1sp"
+            android:background="@color/text_primary"
+            android:layout_marginBottom="10sp"/>
+
+        <LinearLayout
             android:id="@+id/changeDevice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +74,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/thay_i_thi_t_b"
+                android:text="@string/change_device"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold"
                 android:gravity="start"
@@ -64,7 +97,6 @@
             android:background="@color/text_primary"
             android:layout_marginBottom="10sp"/>
 
-
         <LinearLayout
             android:id="@+id/updateFirmware"
             android:layout_width="match_parent"
@@ -75,7 +107,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/c_p_nh_t_firmware"
+                android:text="@string/update_firmware"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold"
                 android:gravity="start"
@@ -109,7 +141,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ng_xu_t"
+                android:text="@string/logout"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold"
                 android:gravity="start"

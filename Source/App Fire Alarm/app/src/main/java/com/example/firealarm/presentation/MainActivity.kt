@@ -15,8 +15,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.firealarm.R
+import com.example.firealarm.data.websocket.WebViewStompManager
 import com.example.firealarm.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -25,6 +27,9 @@ class MainActivity : AppCompatActivity() {
     private var vibrator: Vibrator? = null
     private var isAlertActive = false
     private var blinkAnimation: Animation? = null
+    
+    @Inject
+    lateinit var webViewStompManager: WebViewStompManager
     
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -62,6 +67,15 @@ class MainActivity : AppCompatActivity() {
 
         // Yêu cầu quyền thông báo cho Android 13+
         requestNotificationPermission()
+        
+        // Khởi tạo WebView cho STOMP WebSocket
+        initializeWebViewStomp()
+    }
+    
+    private fun initializeWebViewStomp() {
+        binding.hiddenWebView.let { webView ->
+            webViewStompManager.initializeWebView(webView)
+        }
     }
 
     private fun requestNotificationPermission() {
@@ -97,6 +111,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        webViewStompManager.cleanup()
     }
 
 }

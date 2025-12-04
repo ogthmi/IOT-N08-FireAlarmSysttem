@@ -11,7 +11,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/ng_nh_p"
+        android:text="@string/login"
         android:textColor="@color/text_primary"
         android:textStyle="bold"
         android:gravity="center"
@@ -88,13 +88,15 @@
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         android:layout_marginTop="10dp"
         app:hintEnabled="false"
-        app:helperTextTextColor="@color/red">
+        app:helperTextTextColor="@color/red"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/text_primary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:hint="@string/e_g_abc"
             android:textColorHint="@color/text_secondary"
             android:background="@drawable/input"
@@ -108,7 +110,7 @@
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/ng_nh_p"
+        android:text="@string/login"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:background="@drawable/button_blur"
@@ -122,6 +124,7 @@
         app:layout_constraintHorizontal_bias="0"/>
 
     <ProgressBar
+        android:id="@+id/loading"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/btnLogin"

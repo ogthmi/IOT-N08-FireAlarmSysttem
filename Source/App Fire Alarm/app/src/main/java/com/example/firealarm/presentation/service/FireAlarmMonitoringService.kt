@@ -12,8 +12,6 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.firealarm.R
-import com.example.firealarm.domain.model.Sensor
-import com.example.firealarm.domain.usecase.GetSensorDataUseCase
 import com.example.firealarm.presentation.MainActivity
 import com.example.firealarm.presentation.utils.NotificationHelper
 import kotlinx.coroutines.CoroutineScope
@@ -28,9 +26,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class FireAlarmMonitoringService : Service() {
-
-    @Inject
-    lateinit var getSensorDataUseCase: GetSensorDataUseCase
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
@@ -69,7 +64,7 @@ class FireAlarmMonitoringService : Service() {
         // Khởi tạo notification channel cho cảnh báo
         NotificationHelper.createNotificationChannel(this)
         
-        startMonitoring()
+//        startMonitoring()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -119,43 +114,43 @@ class FireAlarmMonitoringService : Service() {
             .build()
     }
 
-    private fun startMonitoring() {
-        Log.d(TAG, "Starting sensor monitoring")
-        getSensorDataUseCase.execute()
-            .onEach { sensor ->
-                Log.d(TAG, "Sensor data received: Fire=${sensor.isFire}, Smoke=${sensor.isSmoke}")
-                checkAndShowFireAlert(sensor)
-            }
-            .catch { exception ->
-                Log.e(TAG, "Error monitoring sensor data: ${exception.message}", exception)
-            }
-            .launchIn(serviceScope)
-        Log.d(TAG, "Sensor monitoring started")
-    }
+//    private fun startMonitoring() {
+//        Log.d(TAG, "Starting sensor monitoring")
+//        getSensorDataUseCase.execute()
+//            .onEach { sensor ->
+//                Log.d(TAG, "Sensor data received: Fire=${sensor.isFire}, Smoke=${sensor.isSmoke}")
+//                checkAndShowFireAlert(sensor)
+//            }
+//            .catch { exception ->
+//                Log.e(TAG, "Error monitoring sensor data: ${exception.message}", exception)
+//            }
+//            .launchIn(serviceScope)
+//        Log.d(TAG, "Sensor monitoring started")
+//    }
 
     private fun stopMonitoring() {
         serviceScope.cancel()
         Log.d(TAG, "Stopped monitoring sensor data")
     }
 
-    private fun checkAndShowFireAlert(sensor: Sensor) {
-        // Kiểm tra nếu phát hiện cháy
-        if (sensor.isFire) {
-            NotificationHelper.showFireAlert(
-                this,
-                "⚠️ PHÁT HIỆN CHÁY! Giá trị lửa: ${sensor.fire}. Vui lòng kiểm tra ngay!"
-            )
-            
-            Log.d(TAG, "Fire detected! Showing notification and alert border")
-        }
-        // Kiểm tra nếu phát hiện khói
-        if (sensor.isSmoke) {
-            NotificationHelper.showFireAlert(
-                this,
-                "⚠️ PHÁT HIỆN KHÓI! Giá trị khói: ${sensor.smoke}. Có thể có nguy cơ cháy!"
-            )
-            Log.d(TAG, "Smoke detected! Showing notification and alert border")
-        }
-    }
+//    private fun checkAndShowFireAlert(sensor: Sensor) {
+//        // Kiểm tra nếu phát hiện cháy
+//        if (sensor.isFire) {
+//            NotificationHelper.showFireAlert(
+//                this,
+//                "⚠️ PHÁT HIỆN CHÁY! Giá trị lửa: ${sensor.fire}. Vui lòng kiểm tra ngay!"
+//            )
+//
+//            Log.d(TAG, "Fire detected! Showing notification and alert border")
+//        }
+//        // Kiểm tra nếu phát hiện khói
+//        if (sensor.isSmoke) {
+//            NotificationHelper.showFireAlert(
+//                this,
+//                "⚠️ PHÁT HIỆN KHÓI! Giá trị khói: ${sensor.smoke}. Có thể có nguy cơ cháy!"
+//            )
+//            Log.d(TAG, "Smoke detected! Showing notification and alert border")
+//        }
+//    }
 }
 
