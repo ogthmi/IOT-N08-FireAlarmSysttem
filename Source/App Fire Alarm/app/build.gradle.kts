@@ -73,14 +73,14 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.google.code.gson:gson:2.10.1")
-    
+
     // STOMP WebSocket client
     implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
-    
+
     // RxJava2 dependencies
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
     implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
-    
+
     // MPAndroidChart for charts
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

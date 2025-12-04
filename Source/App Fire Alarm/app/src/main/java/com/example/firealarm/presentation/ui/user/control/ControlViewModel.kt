@@ -80,7 +80,7 @@ class ControlViewModel @Inject constructor(
             webViewStompManager.connect()
         }
     }
-    
+
     fun disconnectWebSocket() {
         webViewStompManager.disconnect()
         _connectionStatus.value = false

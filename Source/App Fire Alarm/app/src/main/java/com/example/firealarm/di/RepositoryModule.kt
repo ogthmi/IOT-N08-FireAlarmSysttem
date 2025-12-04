@@ -35,11 +35,11 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindStatusRepository(impl: StatusRepositoryImpl): StatusRepository
-    
+
     @Binds
     @Singleton
     abstract fun bindThresholdRepository(impl: ThresholdRepositoryImpl): ThresholdRepository
-    
+
     @Binds
     @Singleton
     abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
