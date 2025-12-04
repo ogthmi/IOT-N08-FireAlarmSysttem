@@ -71,6 +71,50 @@ public class FirmwareController {
     }
 
     /**
+     * Lấy thông tin firmware theo ID
+     * GET /api/v1/firmware/versions/{id}
+     */
+    @GetMapping("/versions/{id}")
+    public ApiResponse<FirmwareVersionDTO> getFirmwareVersionById(@PathVariable Long id) {
+        FirmwareVersionDTO firmware = firmwareService.getFirmwareVersionById(id);
+        return ApiResponse.<FirmwareVersionDTO>builder()
+                .code(200)
+                .message("Get firmware version successfully")
+                .result(firmware)
+                .build();
+    }
+
+    /**
+     * Cập nhật thông tin firmware
+     * PUT /api/v1/firmware/versions/{id}
+     */
+    @PostMapping("/versions/{id}")
+    public ApiResponse<FirmwareVersionDTO> updateFirmwareVersion(
+            @PathVariable Long id,
+            @RequestBody FirmwareVersionDTO firmwareVersionDTO) {
+        FirmwareVersionDTO updated = firmwareService.updateFirmwareVersion(id, firmwareVersionDTO);
+        return ApiResponse.<FirmwareVersionDTO>builder()
+                .code(200)
+                .message("Firmware version updated successfully")
+                .result(updated)
+                .build();
+    }
+
+    /**
+     * Xóa firmware version
+     * DELETE /api/v1/firmware/versions/{id}
+     */
+    @DeleteMapping("/versions/{id}")
+    public ApiResponse<String> deleteFirmwareVersion(@PathVariable Long id) {
+        firmwareService.deleteFirmwareVersion(id);
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Firmware version deleted successfully")
+                .result("Firmware ID: " + id)
+                .build();
+    }
+
+    /**
      * Bắt đầu OTA update cho thiết bị
      * POST /api/firmware/ota/start
      */

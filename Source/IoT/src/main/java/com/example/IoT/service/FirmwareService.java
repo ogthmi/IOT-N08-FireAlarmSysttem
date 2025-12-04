@@ -74,6 +74,67 @@ public class FirmwareService {
     }
 
     /**
+     * Lấy thông tin firmware theo ID
+     */
+    @Transactional(readOnly = true)
+    public FirmwareVersionDTO getFirmwareVersionById(Long id) {
+        FirmwareVersionEntity entity = firmwareVersionRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.FIRMWARE_VERSION_NOT_FOUND));
+        return convertToDTO(entity);
+    }
+
+    /**
+     * Cập nhật thông tin firmware
+     */
+    @Transactional
+    public FirmwareVersionDTO updateFirmwareVersion(Long id, FirmwareVersionDTO dto) {
+        FirmwareVersionEntity entity = firmwareVersionRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.FIRMWARE_VERSION_NOT_FOUND));
+
+        // Kiểm tra version mới đã tồn tại chưa (nếu thay đổi version)
+        if (!entity.getVersion().equals(dto.getVersion()) && 
+            firmwareVersionRepository.existsByVersion(dto.getVersion())) {
+            throw new AppException(ErrorCode.FIRMWARE_VERSION_EXISTED);
+        }
+
+        // Cập nhật thông tin
+        if (dto.getVersion() != null) {
+            entity.setVersion(dto.getVersion());
+        }
+        if (dto.getVersionNumber() > 0) {
+            entity.setVersionNumber(dto.getVersionNumber());
+        }
+        if (dto.getDownloadUrl() != null) {
+            entity.setFirmwareUrl(dto.getDownloadUrl());
+        }
+        if (dto.getDescription() != null) {
+            entity.setDescription(dto.getDescription());
+        }
+
+        FirmwareVersionEntity updated = firmwareVersionRepository.save(entity);
+        return convertToDTO(updated);
+    }
+
+    /**
+     * Xóa firmware version
+     */
+    @Transactional
+    public void deleteFirmwareVersion(Long id) {
+        FirmwareVersionEntity entity = firmwareVersionRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.FIRMWARE_VERSION_NOT_FOUND));
+
+        // Kiểm tra xem có update nào đang sử dụng version này không
+        List<FirmwareUpdateEntity> activeUpdates = firmwareUpdateRepository
+                .findByVersionNextIdAndStatusIn(id, List.of("PENDING", "IN_PROGRESS"));
+        
+        if (!activeUpdates.isEmpty()) {
+            throw new AppException(ErrorCode.FIRMWARE_UPDATE_IN_PROGRESS);
+        }
+
+        firmwareVersionRepository.delete(entity);
+    }
+
+    /**
      * Lấy phiên bản firmware mới nhất
      */
     @Transactional(readOnly = true)
@@ -98,7 +159,7 @@ public class FirmwareService {
         // Kiểm tra phiên bản firmware target
         FirmwareVersionEntity targetVersion = firmwareVersionRepository
                 .findByVersion(request.getTargetVersion())
-                .orElseThrow(() -> new AppException(ErrorCode.UNIT_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.FIRMWARE_VERSION_NOT_FOUND));
 
         // Kiểm tra xem có update đang chạy không
         firmwareUpdateRepository.findByDeviceIdAndStatus(request.getDeviceId(), "IN_PROGRESS")
@@ -109,7 +170,7 @@ public class FirmwareService {
         // Tạo bản ghi firmware update
         FirmwareUpdateEntity updateEntity = FirmwareUpdateEntity.builder()
                 .deviceId(request.getDeviceId())
-                .versionPreviousId(null) // Có thể lấy từ device nếu lưu current version
+                .versionPreviousId(null)
                 .versionNextId(targetVersion.getId())
                 .status("PENDING")
                 .startTime(LocalDateTime.now())
@@ -236,7 +297,6 @@ public class FirmwareService {
      * Generate firmware download URL
      */
     private String generateFirmwareUrl(FirmwareVersionEntity firmware) {
-        // Trả về Cloudinary URL từ database, hoặc null nếu chưa có
         return firmware.getFirmwareUrl() != null ? firmware.getFirmwareUrl() : null;
     }
 

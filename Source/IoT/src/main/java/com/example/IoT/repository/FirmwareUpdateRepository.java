@@ -14,4 +14,5 @@ public interface FirmwareUpdateRepository extends JpaRepository<FirmwareUpdateEn
     List<FirmwareUpdateEntity> findAllByDeviceId(String deviceId);
     Optional<FirmwareUpdateEntity> findByDeviceIdAndStatus(String deviceId, String status);
     Page<FirmwareUpdateEntity> findAllByDeviceId(String deviceId, Pageable pageable);
+    List<FirmwareUpdateEntity> findByVersionNextIdAndStatusIn(Long versionNextId, List<String> statuses);
 }
