@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,10 +44,10 @@ public class StatisticService {
                         ));
 
         List<Long> sensorIds = new ArrayList<>(sensorEntityMap.keySet());
-        LocalDateTime oneHourAgo = LocalDateTime.now().minusHours(1);
+        LocalDateTime fourMinutesAgo = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).minusMinutes(4);
 
         List<TelemetryEntity> telemetryEntities = telemetryRepository
-                .findAllBySensorIdInAndCreatedAtAfter(sensorIds, oneHourAgo);
+                .findAllBySensorIdInAndCreatedAtAfter(sensorIds, fourMinutesAgo);
 
         List<TemperatureDTO> temperatureDTOS = new ArrayList<>();
         List<SmokeDTO> smokeDTOS = new ArrayList<>();
@@ -74,6 +75,10 @@ public class StatisticService {
                 humidityDTOS.add(humidityDTO);
             }
         }
+
+        System.out.println(temperatureDTOS.size());
+        System.out.println(humidityDTOS.size());
+        System.out.println(smokeDTOS.size());
 
         return TelemetryStatisticResponse.builder()
                 .temperatures(temperatureDTOS)
