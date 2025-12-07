@@ -55,50 +55,57 @@ public class MqttService {
         System.out.println("Payload: " + payload);
         System.out.println("---------------------------------------------");
 
-        try {
-            TelemetryDevice telemetryDevice = objectMapper.readValue(payload, TelemetryDevice.class);
+        if (topic.equals("iot/status")) {
+            handleStatusUpdate(payload);
+            return;
+        }
 
-            if (telemetryDevice != null) {
-                List<TelemetryResponse> telemetryResponses = new ArrayList<>();
-                if (Boolean.TRUE.equals(deviceRepository.existsByDeviceId(telemetryDevice.getDeviceId()))) {
+        if (topic.equals("iot/data")) {
+            try {
+                TelemetryDevice telemetryDevice = objectMapper.readValue(payload, TelemetryDevice.class);
 
-                    UserEntity userEntity = userRepository.findById(
-                            deviceRepository.findByDeviceId(telemetryDevice.getDeviceId()).getUserId()
-                    ).orElseThrow(
-                            () -> new AppException(ErrorCode.USER_NOT_EXISTED)
-                    );
+                if (telemetryDevice != null) {
+                    List<TelemetryResponse> telemetryResponses = new ArrayList<>();
+                    if (Boolean.TRUE.equals(deviceRepository.existsByDeviceId(telemetryDevice.getDeviceId()))) {
 
-                    CompletableFuture.runAsync(() -> {
-                        overThreshold(telemetryDevice.getDeviceId(), telemetryDevice.getTelemetries(), userEntity.getId());
-                    });
-
-                    Map<String, SensorEntity> sensorEntityMap = sensorRepository.findAllByDeviceId(telemetryDevice.getDeviceId())
-                            .stream().collect(Collectors.toMap(SensorEntity::getSensorName, Function.identity()));
-                    for (Telemetry telemetry : telemetryDevice.getTelemetries()) {
-                        SensorEntity sensorEntity = sensorEntityMap.get(telemetry.getName());
-                        TelemetryEntity telemetryEntity = TelemetryEntity.builder()
-                                .sensorId(sensorEntity.getId())
-                                .value(telemetry.getValue() != null ? telemetry.getValue() : null)
-                                .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
-                                .createdAt(LocalDateTime.now())
-                                .build();
-                        telemetryRepository.save(telemetryEntity);
-
-                        telemetryResponses.add(
-                                TelemetryResponse.builder()
-                                        .deviceId(telemetryDevice.getDeviceId())
-                                        .name(telemetry.getName())
-                                        .value(telemetry.getValue() != null ? telemetry.getValue() : null)
-                                        .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
-                                        .unit(sensorEntity.getUnit() != null ? sensorEntity.getUnit() : null)
-                                        .build()
+                        UserEntity userEntity = userRepository.findById(
+                                deviceRepository.findByDeviceId(telemetryDevice.getDeviceId()).getUserId()
+                        ).orElseThrow(
+                                () -> new AppException(ErrorCode.USER_NOT_EXISTED)
                         );
+
+                        CompletableFuture.runAsync(() -> {
+                            overThreshold(telemetryDevice.getDeviceId(), telemetryDevice.getTelemetries(), userEntity.getId());
+                        });
+
+                        Map<String, SensorEntity> sensorEntityMap = sensorRepository.findAllByDeviceId(telemetryDevice.getDeviceId())
+                                .stream().collect(Collectors.toMap(SensorEntity::getSensorName, Function.identity()));
+                        for (Telemetry telemetry : telemetryDevice.getTelemetries()) {
+                            SensorEntity sensorEntity = sensorEntityMap.get(telemetry.getName());
+                            TelemetryEntity telemetryEntity = TelemetryEntity.builder()
+                                    .sensorId(sensorEntity.getId())
+                                    .value(telemetry.getValue() != null ? telemetry.getValue() : null)
+                                    .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
+                                    .createdAt(LocalDateTime.now())
+                                    .build();
+                            telemetryRepository.save(telemetryEntity);
+
+                            telemetryResponses.add(
+                                    TelemetryResponse.builder()
+                                            .deviceId(telemetryDevice.getDeviceId())
+                                            .name(telemetry.getName())
+                                            .value(telemetry.getValue() != null ? telemetry.getValue() : null)
+                                            .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
+                                            .unit(sensorEntity.getUnit() != null ? sensorEntity.getUnit() : null)
+                                            .build()
+                            );
+                        }
+                        sendDataToUser(userEntity.getId(), telemetryResponses);
                     }
-                    sendDataToUser(userEntity.getId(), telemetryResponses);
                 }
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
             }
-        } catch (Exception e) {
-            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
     }
 
