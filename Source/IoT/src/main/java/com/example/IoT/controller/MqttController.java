@@ -50,7 +50,7 @@ public class MqttController {
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("topic", topic);
-        responseData.put("payload", payload); // giữ object gốc chứ không stringify
+        responseData.put("payload", payload);
 
         System.out.println("====================================================");
         System.out.println("CALL");

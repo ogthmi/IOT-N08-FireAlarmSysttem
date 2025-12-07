@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DeviceRepository extends JpaRepository<DeviceEntity, Long> {
     boolean existsByDeviceId(String deviceId);
@@ -13,4 +15,7 @@ public interface DeviceRepository extends JpaRepository<DeviceEntity, Long> {
     DeviceEntity findByDeviceId(String deviceId);
     DeviceEntity findByUserIdAndDeviceId(Long userId, String deviceId);
     Page<DeviceEntity> findAllByUserId(Long userId, Pageable pageable);
+    List<DeviceEntity> findAllByUserId(Long userId);
+    void deleteAllByUserId(Long userId);
+    void deleteByDeviceId(String deviceId);
 }

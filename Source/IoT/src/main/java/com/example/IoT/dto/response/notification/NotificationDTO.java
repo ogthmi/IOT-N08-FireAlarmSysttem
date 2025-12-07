@@ -12,5 +12,7 @@ import java.time.LocalDateTime;
 public class NotificationDTO {
     private String deviceId;
     private String title;
+    private String type;
+    private Double value;
     private LocalDateTime timestamp;
 }

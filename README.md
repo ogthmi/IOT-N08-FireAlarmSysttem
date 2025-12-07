@@ -1,4 +1,4 @@
-# Hệ Thống Cảnh Báo Cháy Sử Dụng IoT (Nhóm 08)
+# Hệ Thống Cảnh Báo Cháy Sử Dụng IoT (Nhóm 08 - CNPM01)
 
 ## 1. Giới Thiệu
 Hệ thống báo cháy (Fire Alarm System) là hệ thống phát hiện và cảnh báo khi có sự xuất hiện của lửa, khói hoặc nhiệt độ bất thường. Mục tiêu chính là đảm bảo an toàn cho con người và tài sản bằng cách:

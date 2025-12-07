@@ -1,5 +1,6 @@
 package com.example.IoT.service;
 
+import com.example.IoT.constant.Constant;
 import com.example.IoT.dto.request.telemetry.Telemetry;
 import com.example.IoT.dto.request.telemetry.TelemetryDevice;
 import com.example.IoT.dto.response.notification.NotificationDTO;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -39,6 +41,7 @@ public class MqttService {
     private final RuleRepository ruleRepository;
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
+    private final FirmwareUpdateRepository firmwareUpdateRepository;
 
     @ServiceActivator(inputChannel = "mqttInboundChannel")
     @Transactional
@@ -52,50 +55,57 @@ public class MqttService {
         System.out.println("Payload: " + payload);
         System.out.println("---------------------------------------------");
 
-        try {
-            TelemetryDevice telemetryDevice = objectMapper.readValue(payload, TelemetryDevice.class);
+        if (topic.equals("iot/status")) {
+            handleStatusUpdate(payload);
+            return;
+        }
 
-            if (telemetryDevice != null) {
-                List<TelemetryResponse> telemetryResponses = new ArrayList<>();
-                if (Boolean.TRUE.equals(deviceRepository.existsByDeviceId(telemetryDevice.getDeviceId()))) {
+        if (topic.equals("iot/data")) {
+            try {
+                TelemetryDevice telemetryDevice = objectMapper.readValue(payload, TelemetryDevice.class);
 
-                    UserEntity userEntity = userRepository.findById(
-                            deviceRepository.findByDeviceId(telemetryDevice.getDeviceId()).getUserId()
-                    ).orElseThrow(
-                            () -> new AppException(ErrorCode.USER_NOT_EXISTED)
-                    );
+                if (telemetryDevice != null) {
+                    List<TelemetryResponse> telemetryResponses = new ArrayList<>();
+                    if (Boolean.TRUE.equals(deviceRepository.existsByDeviceId(telemetryDevice.getDeviceId()))) {
 
-                    CompletableFuture.runAsync(() -> {
-                        overThreshold(telemetryDevice.getDeviceId(), telemetryDevice.getTelemetries(), userEntity.getId());
-                    });
-
-                    Map<String, SensorEntity> sensorEntityMap = sensorRepository.findAllByDeviceId(telemetryDevice.getDeviceId())
-                            .stream().collect(Collectors.toMap(SensorEntity::getSensorName, Function.identity()));
-                    for (Telemetry telemetry : telemetryDevice.getTelemetries()) {
-                        SensorEntity sensorEntity = sensorEntityMap.get(telemetry.getName());
-                        TelemetryEntity telemetryEntity = TelemetryEntity.builder()
-                                .sensorId(sensorEntity.getId())
-                                .value(telemetry.getValue() != null ? telemetry.getValue() : null)
-                                .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
-                                .createdAt(LocalDateTime.now())
-                                .build();
-                        telemetryRepository.save(telemetryEntity);
-
-                        telemetryResponses.add(
-                                TelemetryResponse.builder()
-                                        .deviceId(telemetryDevice.getDeviceId())
-                                        .name(telemetry.getName())
-                                        .value(telemetry.getValue() != null ? telemetry.getValue() : null)
-                                        .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
-                                        .unit(sensorEntity.getUnit() != null ? sensorEntity.getUnit() : null)
-                                        .build()
+                        UserEntity userEntity = userRepository.findById(
+                                deviceRepository.findByDeviceId(telemetryDevice.getDeviceId()).getUserId()
+                        ).orElseThrow(
+                                () -> new AppException(ErrorCode.USER_NOT_EXISTED)
                         );
+
+                        CompletableFuture.runAsync(() -> {
+                            overThreshold(telemetryDevice.getDeviceId(), telemetryDevice.getTelemetries(), userEntity.getId());
+                        });
+
+                        Map<String, SensorEntity> sensorEntityMap = sensorRepository.findAllByDeviceId(telemetryDevice.getDeviceId())
+                                .stream().collect(Collectors.toMap(SensorEntity::getSensorName, Function.identity()));
+                        for (Telemetry telemetry : telemetryDevice.getTelemetries()) {
+                            SensorEntity sensorEntity = sensorEntityMap.get(telemetry.getName());
+                            TelemetryEntity telemetryEntity = TelemetryEntity.builder()
+                                    .sensorId(sensorEntity.getId())
+                                    .value(telemetry.getValue() != null ? telemetry.getValue() : null)
+                                    .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
+                                    .createdAt(LocalDateTime.now())
+                                    .build();
+                            telemetryRepository.save(telemetryEntity);
+
+                            telemetryResponses.add(
+                                    TelemetryResponse.builder()
+                                            .deviceId(telemetryDevice.getDeviceId())
+                                            .name(telemetry.getName())
+                                            .value(telemetry.getValue() != null ? telemetry.getValue() : null)
+                                            .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
+                                            .unit(sensorEntity.getUnit() != null ? sensorEntity.getUnit() : null)
+                                            .build()
+                            );
+                        }
+                        sendDataToUser(userEntity.getId(), telemetryResponses);
                     }
-                    sendDataToUser(userEntity.getId(), telemetryResponses);
                 }
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
             }
-        } catch (Exception e) {
-            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
     }
 
@@ -120,6 +130,8 @@ public class MqttService {
                             NotificationEntity fireNotification = NotificationEntity.builder()
                                     .deviceId(deviceId)
                                     .title("Phát hiện vượt mức ngưỡng nhiệt độ, cảnh báo cháy")
+                                    .type(Constant.TEMPERATURE)
+                                    .value(Double.parseDouble(telemetry.getValue()))
                                     .timestamp(LocalDateTime.now())
                                     .build();
 
@@ -130,6 +142,8 @@ public class MqttService {
                             NotificationEntity smokeNotification = NotificationEntity.builder()
                                     .deviceId(deviceId)
                                     .title("Phát hiện vượt mức ngưỡng khí/khói, cảnh báo cháy")
+                                    .type(Constant.SMOKE)
+                                    .value(Double.parseDouble(telemetry.getValue()))
                                     .timestamp(LocalDateTime.now())
                                     .build();
 
@@ -151,5 +165,66 @@ public class MqttService {
                 "/notification",
                 notificationDTO
         );
+    }
+
+    /**
+     * Handle status updates from devices (including OTA updates)
+     */
+    private void handleStatusUpdate(String payload) throws JsonProcessingException {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> statusData = objectMapper.readValue(payload, Map.class);
+
+        String deviceId = (String) statusData.get("deviceId");
+        String status = (String) statusData.get("status");
+
+        System.out.println("Status update from device: " + deviceId + " - Status: " + status);
+
+        // Check if it's an OTA update status
+        if (status != null && (status.equals("IN_PROGRESS") ||
+                               status.equals("COMPLETED") ||
+                               status.equals("FAILED") ||
+                               status.equals("SKIPPED"))) {
+            Integer progress = statusData.get("progress") != null
+                ? (Integer) statusData.get("progress")
+                : 0;
+
+            updateOTAStatus(deviceId, status, progress);
+        }
+    }
+
+    /**
+     * Update OTA status directly (to avoid circular dependency)
+     */
+    @Transactional
+    public void updateOTAStatus(String deviceId, String status, Integer progress) {
+        FirmwareUpdateEntity update = firmwareUpdateRepository
+                .findByDeviceIdAndStatus(deviceId, "IN_PROGRESS")
+                .orElse(null);
+
+        if (update != null) {
+            update.setStatus(status);
+
+            if ("COMPLETED".equals(status) || "FAILED".equals(status)) {
+                update.setEndTime(LocalDateTime.now());
+            }
+
+            firmwareUpdateRepository.save(update);
+
+            // Send notification via WebSocket
+            DeviceEntity device = deviceRepository.findByDeviceId(deviceId);
+            if (device != null) {
+                Map<String, Object> notification = new HashMap<>();
+                notification.put("deviceId", deviceId);
+                notification.put("status", status);
+                notification.put("progress", progress);
+                notification.put("updateId", update.getId());
+
+                messagingTemplate.convertAndSendToUser(
+                        device.getUserId().toString(),
+                        "/firmware",
+                        notification
+                );
+            }
+        }
     }
 }

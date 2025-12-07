@@ -10,4 +10,5 @@ import java.util.List;
 public interface SensorRepository extends JpaRepository<SensorEntity, Long> {
     List<SensorEntity> findAllByDeviceId(String deviceId);
     List<SensorEntity> findAllByDeviceIdIn(List<String> deviceIds);
+    void deleteAllByDeviceIdIn(List<String> deviceIds);
 }
