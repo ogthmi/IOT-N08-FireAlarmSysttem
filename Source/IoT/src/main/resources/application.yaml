@@ -6,7 +6,7 @@ mqtt:
   username: "phongdo"
   password: "Phonggda123"
   default:
-    topics: iot/data
+    topics: iot/#
 spring:
   application:
     name: demo
