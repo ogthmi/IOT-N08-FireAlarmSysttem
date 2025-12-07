@@ -2,6 +2,7 @@ package com.example.IoT.service;
 
 import com.example.IoT.dto.request.SensorDTO;
 import com.example.IoT.dto.request.device.DeviceDTO;
+import com.example.IoT.dto.request.device.InformationDeviceRequest;
 import com.example.IoT.dto.request.threshold.ThresholdDTO;
 import com.example.IoT.entity.DeviceEntity;
 import com.example.IoT.entity.RuleEntity;
@@ -9,10 +10,7 @@ import com.example.IoT.entity.SensorEntity;
 import com.example.IoT.entity.UserEntity;
 import com.example.IoT.exception.AppException;
 import com.example.IoT.exception.ErrorCode;
-import com.example.IoT.repository.DeviceRepository;
-import com.example.IoT.repository.RuleRepository;
-import com.example.IoT.repository.SensorRepository;
-import com.example.IoT.repository.UserRepository;
+import com.example.IoT.repository.*;
 import com.example.IoT.security.TokenHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,15 +28,15 @@ public class DeviceService {
     private final SensorRepository sensorRepository;
     private final UserRepository userRepository;
     private final RuleRepository ruleRepository;
+    private final TelemetryRepository telemetryRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public void createDevice(DeviceDTO deviceDTO) {
 
-        UserEntity userEntity = userRepository.findByUsername(deviceDTO.getUsername());
-        if (Objects.isNull(userEntity)) {
-            throw new AppException(ErrorCode.USER_NOT_EXISTED);
-        }
-
+        UserEntity userEntity = userRepository.findById(deviceDTO.getUserId()).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_EXISTED)
+        );
         DeviceEntity deviceEntity = DeviceEntity.builder()
                 .deviceId(deviceDTO.getDeviceId())
                 .deviceName(deviceDTO.getDeviceName())
@@ -77,11 +75,51 @@ public class DeviceService {
     public Page<DeviceDTO> getDevicesByUserId(Pageable pageable, String accessToken) {
         Long userId = TokenHelper.getUserIdFromToken(accessToken);
         Page<DeviceEntity> deviceEntities = deviceRepository.findAllByUserId(userId, pageable);
+        if (deviceEntities.isEmpty() || deviceEntities == null) {
+            return Page.empty();
+        }
         return getDevicePage(deviceEntities);
+    }
+
+    @Transactional
+    public void changeInformationDevice(String deviceId,
+                                        InformationDeviceRequest informationDeviceRequest,
+                                        String accessToken) {
+        Long userId = TokenHelper.getUserIdFromToken(accessToken);
+        String role = TokenHelper.getRoleFromToken(accessToken);
+        System.out.println(role);
+        DeviceEntity deviceEntity = deviceRepository.findByDeviceId(deviceId);
+
+        if (!role.equals("ADMIN") && userId != deviceEntity.getUserId()) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        deviceEntity.setDeviceName(informationDeviceRequest.getDeviceName());
+        deviceEntity.setDescription(informationDeviceRequest.getDescription());
+        deviceRepository.save(deviceEntity);
+    }
+
+    @Transactional
+    public void deleteDevice(String deviceId) {
+        List<Long> sensorIds = sensorRepository.findAllByDeviceId(deviceId)
+                .stream().map(SensorEntity::getId).collect(Collectors.toList());
+        telemetryRepository.deleteAllBySensorIdIn(sensorIds);
+        ruleRepository.deleteAllByDeviceIdIn(Arrays.asList(deviceId));
+        notificationRepository.deleteAllByDeviceIdIn(Arrays.asList(deviceId));
+        sensorRepository.deleteAllByDeviceIdIn(Arrays.asList(deviceId));
+        deviceRepository.deleteByDeviceId(deviceId);
     }
 
     private Page<DeviceDTO> getDevicePage(Page<DeviceEntity> deviceEntities) {
         List<String> deviceIds = deviceEntities.stream().map(DeviceEntity::getDeviceId).collect(Collectors.toList());
+        Map<Long, UserEntity> userEntities = userRepository.findAllByIdIn(
+                deviceEntities.stream().map(DeviceEntity::getUserId).collect(Collectors.toSet())
+        ).stream().collect(Collectors.toMap(UserEntity::getId, userEntity -> userEntity));
+        Map<String, UserEntity> userEntityMap = new HashMap<>();
+        for (DeviceEntity deviceEntity : deviceEntities) {
+            UserEntity userEntity = userEntities.get(deviceEntity.getUserId());
+            userEntityMap.put(deviceEntity.getDeviceId(), userEntity);
+        }
         Map<String, List<SensorEntity>> sensorMap =
                 sensorRepository.findAllByDeviceIdIn(deviceIds)
                         .stream()
@@ -93,9 +131,11 @@ public class DeviceService {
         return deviceEntities.map(
                 deviceEntity -> {
                     DeviceDTO deviceDTO = new DeviceDTO();
+                    UserEntity userEntity = userEntityMap.get(deviceEntity.getDeviceId());
                     deviceDTO.setDeviceId(deviceEntity.getDeviceId());
                     deviceDTO.setDeviceName(deviceEntity.getDeviceName());
                     deviceDTO.setDescription(deviceEntity.getDescription());
+                    deviceDTO.setUserId(userEntity.getId());
                     List<SensorDTO> sensorDTOS = new ArrayList<>();
                     List<ThresholdDTO> thresholdDTOS = new ArrayList<>();
                     for (SensorEntity sensorEntity : sensorMap.get(deviceEntity.getDeviceId())) {

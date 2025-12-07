@@ -4,6 +4,7 @@ package com.example.IoT.controller;
 import com.example.IoT.dto.ApiResponse;
 import com.example.IoT.dto.request.LogInRequest;
 import com.example.IoT.dto.request.UserRequest;
+import com.example.IoT.dto.request.user.InformationRequest;
 import com.example.IoT.dto.response.TokenResponse;
 import com.example.IoT.dto.response.UserOutputV2;
 import com.example.IoT.service.UserService;
@@ -53,6 +54,28 @@ public class UserController {
                 .code(200)
                 .message("Lấy danh sách người dùng thành công")
                 .result(userService.getUserInformationPage(pageable))
+                .build();
+    }
+
+    @Operation(summary = "Thay đổi thông tin người dùng")
+    @PutMapping
+    public ApiResponse<?> changeInformation(@RequestHeader("Authorization") String accessToken,
+                                            @RequestBody InformationRequest informationRequest) {
+        userService.changeInformation(accessToken, informationRequest);
+        return ApiResponse.builder()
+                .message("Thay đổi thông tin thành công")
+                .code(200)
+                .build();
+    }
+
+    @Operation(summary = "Xóa người dùng")
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<?> deleteUser(@RequestParam Long userId) {
+        userService.deleteUser(userId);
+        return ApiResponse.builder()
+                .code(200)
+                .message("Xóa người dùng thành công")
                 .build();
     }
 }

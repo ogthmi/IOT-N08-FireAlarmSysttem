@@ -15,7 +15,7 @@ public class DeviceDTO {
     private String deviceId;
     private String deviceName;
     private String description;
-    private String username;
+    private Long userId;
     private List<SensorDTO> sensors;
     private List<ThresholdDTO> thresholds;
 }

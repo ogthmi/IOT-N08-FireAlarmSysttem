@@ -17,4 +17,6 @@ public class UserRequest {
     private String password;
     @NotEmpty
     private String role;
+    @NotEmpty
+    private String phoneNumber;
 }
