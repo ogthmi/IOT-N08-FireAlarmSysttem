@@ -21,6 +21,14 @@ public enum ErrorCode {
     UNIT_NOT_FOUND(1014, "Unit not found", HttpStatus.BAD_REQUEST),
     ORDER_NOT_FOUND(1015, "Order not found", HttpStatus.BAD_REQUEST),
     DEVICE_NOT_FOUND(1016, "Device not found", HttpStatus.BAD_REQUEST),
+    FIRMWARE_VERSION_EXISTED(1017, "Firmware version already exists", HttpStatus.BAD_REQUEST),
+    FIRMWARE_VERSION_NOT_FOUND(1018, "Firmware version not found", HttpStatus.BAD_REQUEST),
+    FIRMWARE_UPDATE_IN_PROGRESS(1019, "Firmware update already in progress", HttpStatus.BAD_REQUEST),
+    FIRMWARE_FILE_EMPTY(1020, "Firmware file is empty", HttpStatus.BAD_REQUEST),
+    FIRMWARE_FILE_INVALID(1021, "Invalid firmware file format. Only .bin files are allowed", HttpStatus.BAD_REQUEST),
+    FIRMWARE_URL_REQUIRED(1022, "Firmware download URL is required", HttpStatus.BAD_REQUEST),
+    FIRMWARE_UPDATE_NOT_FOUND(1023, "Firmware update not found or already completed", HttpStatus.BAD_REQUEST),
+    FIRMWARE_UPDATE_NOT_CANCELLABLE(1024, "Cannot cancel firmware update in current status", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

@@ -13,7 +13,29 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/IoT
     username: postgres
-    password : phonggda123
+    password: phonggda123
+    hikari:
+      connection-init-sql: SET TIME ZONE 'UTC'
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+    open-in-view: false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# Cloudinary configuration
+cloudinary:
+  cloud-name: dqlqa3yoo
+  api-key: 287637867599735
+  api-secret: wPIfT6bfGrMD8XzzN421dKw3200
+
+server:
+  port: 8080
