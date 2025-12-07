@@ -1,5 +1,6 @@
 package com.example.IoT.service;
 
+import com.example.IoT.constant.Constant;
 import com.example.IoT.dto.request.telemetry.Telemetry;
 import com.example.IoT.dto.request.telemetry.TelemetryDevice;
 import com.example.IoT.dto.response.notification.NotificationDTO;
@@ -120,6 +121,8 @@ public class MqttService {
                             NotificationEntity fireNotification = NotificationEntity.builder()
                                     .deviceId(deviceId)
                                     .title("Phát hiện vượt mức ngưỡng nhiệt độ, cảnh báo cháy")
+                                    .type(Constant.TEMPERATURE)
+                                    .value(Double.parseDouble(telemetry.getValue()))
                                     .timestamp(LocalDateTime.now())
                                     .build();
 
@@ -130,6 +133,8 @@ public class MqttService {
                             NotificationEntity smokeNotification = NotificationEntity.builder()
                                     .deviceId(deviceId)
                                     .title("Phát hiện vượt mức ngưỡng khí/khói, cảnh báo cháy")
+                                    .type(Constant.SMOKE)
+                                    .value(Double.parseDouble(telemetry.getValue()))
                                     .timestamp(LocalDateTime.now())
                                     .build();
 

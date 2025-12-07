@@ -11,4 +11,5 @@ import java.util.List;
 public interface RuleRepository extends JpaRepository<RuleEntity, Long> {
     List<RuleEntity> findAllByDeviceId(String deviceId);
     List<RuleEntity> findAllByDeviceIdIn(List<String> deviceIds);
+    void deleteAllByDeviceIdIn(List<String> deviceIds);
 }

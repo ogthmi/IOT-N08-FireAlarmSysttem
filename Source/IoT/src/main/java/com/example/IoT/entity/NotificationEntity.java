@@ -18,5 +18,7 @@ public class NotificationEntity {
     private Long id;
     private String deviceId;
     private String title;
+    private String type;
+    private Double value;
     private LocalDateTime timestamp;
 }

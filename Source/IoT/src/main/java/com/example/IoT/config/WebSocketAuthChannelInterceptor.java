@@ -13,24 +13,39 @@ import org.springframework.stereotype.Component;
 public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
+        StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        StompHeaderAccessor accessor =
-                MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+        System.out.println("=======================CONNECT=============================");
 
-        if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            String token = accessor.getFirstNativeHeader("Authorization");
-            if (token == null) {
-                token = accessor.getFirstNativeHeader("authorization");
+        if (accessor != null) {
+            if (accessor.getCommand() != null) {
+                System.out.println("STOMP command: " + accessor.getCommand());
+                System.out.println("Headers: " + accessor.toNativeHeaderMap());
             }
 
-            if (token == null) {
-                throw new IllegalArgumentException("Missing Authorization header");
-            }
+            if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+                String token = accessor.getFirstNativeHeader("Authorization");
+                if (token == null) token = accessor.getFirstNativeHeader("authorization");
 
-            Long userId = TokenHelper.getUserIdFromToken(token.replace("Bearer ", ""));
-            accessor.setUser(new StompUser(String.valueOf(userId)));
+                if (token == null || token.isBlank()) {
+                    System.out.println("Missing token! Connection will fail.");
+                    throw new IllegalArgumentException("Missing Authorization header");
+                }
+
+                Long userId;
+                try {
+                    userId = TokenHelper.getUserIdFromToken(token);
+                } catch (Exception e) {
+                    System.out.println("Invalid token! " + e.getMessage());
+                    throw new IllegalArgumentException("Invalid token");
+                }
+
+                accessor.setUser(new StompUser(String.valueOf(userId)));
+                System.out.println("User set: " + userId);
+            }
         }
 
         return message;
     }
 }
+
