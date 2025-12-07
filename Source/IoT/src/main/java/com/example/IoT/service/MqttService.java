@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,12 +56,14 @@ public class MqttService {
         System.out.println("Payload: " + payload);
         System.out.println("---------------------------------------------");
 
-        if (topic.equals("iot/status")) {
+        if (topic.equals("iot/ota_status")) {
+            System.out.println(topic);
             handleStatusUpdate(payload);
             return;
         }
 
         if (topic.equals("iot/data")) {
+            System.out.println(topic);
             try {
                 TelemetryDevice telemetryDevice = objectMapper.readValue(payload, TelemetryDevice.class);
 
@@ -86,7 +89,7 @@ public class MqttService {
                                     .sensorId(sensorEntity.getId())
                                     .value(telemetry.getValue() != null ? telemetry.getValue() : null)
                                     .status(telemetry.getStatus() != null ? telemetry.getStatus() : null)
-                                    .createdAt(LocalDateTime.now())
+                                    .createdAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                                     .build();
                             telemetryRepository.save(telemetryEntity);
 
@@ -132,7 +135,7 @@ public class MqttService {
                                     .title("Phát hiện vượt mức ngưỡng nhiệt độ, cảnh báo cháy")
                                     .type(Constant.TEMPERATURE)
                                     .value(Double.parseDouble(telemetry.getValue()))
-                                    .timestamp(LocalDateTime.now())
+                                    .timestamp(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                                     .build();
 
                             notificationRepository.save(fireNotification);
@@ -144,7 +147,7 @@ public class MqttService {
                                     .title("Phát hiện vượt mức ngưỡng khí/khói, cảnh báo cháy")
                                     .type(Constant.SMOKE)
                                     .value(Double.parseDouble(telemetry.getValue()))
-                                    .timestamp(LocalDateTime.now())
+                                    .timestamp(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                                     .build();
 
                             notificationRepository.save(smokeNotification);
@@ -205,7 +208,7 @@ public class MqttService {
             update.setStatus(status);
 
             if ("COMPLETED".equals(status) || "FAILED".equals(status)) {
-                update.setEndTime(LocalDateTime.now());
+                update.setEndTime(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             }
 
             firmwareUpdateRepository.save(update);
