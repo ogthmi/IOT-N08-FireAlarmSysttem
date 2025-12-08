@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,7 @@ public class FirmwareService {
                 .versionNumber(dto.getVersionNumber())
                 .firmwareUrl(dto.getDownloadUrl())
                 .description(dto.getDescription())
-                .releasedAt(LocalDateTime.now())
+                .releasedAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                 .build();
 
         FirmwareVersionEntity saved = firmwareVersionRepository.save(entity);
@@ -173,7 +174,7 @@ public class FirmwareService {
                 .versionPreviousId(null)
                 .versionNextId(targetVersion.getId())
                 .status("PENDING")
-                .startTime(LocalDateTime.now())
+                .startTime(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                 .build();
 
         FirmwareUpdateEntity saved = firmwareUpdateRepository.save(updateEntity);
@@ -203,7 +204,7 @@ public class FirmwareService {
 
         // Cập nhật status thành CANCELLED
         updateEntity.setStatus("CANCELLED");
-        updateEntity.setEndTime(LocalDateTime.now());
+        updateEntity.setEndTime(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         FirmwareUpdateEntity saved = firmwareUpdateRepository.save(updateEntity);
 
         FirmwareVersionEntity next = firmwareVersionRepository
@@ -222,7 +223,7 @@ public class FirmwareService {
         otaCommand.put("version", firmware.getVersion());
         otaCommand.put("versionNumber", firmware.getVersionNumber());
         otaCommand.put("downloadUrl", generateFirmwareUrl(firmware));
-        otaCommand.put("timestamp", LocalDateTime.now().format(formatter));
+        otaCommand.put("timestamp", LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).format(formatter));
 
         String jsonPayload = objectMapper.writeValueAsString(otaCommand);
         String topic = "iot/device/" + deviceId + "/ota";
@@ -237,7 +238,7 @@ public class FirmwareService {
     private void sendCancelCommand(String deviceId) throws JsonProcessingException {
         Map<String, Object> cancelCommand = new HashMap<>();
         cancelCommand.put("command", "OTA_CANCEL");
-        cancelCommand.put("timestamp", LocalDateTime.now().format(formatter));
+        cancelCommand.put("timestamp", LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).format(formatter));
 
         String jsonPayload = objectMapper.writeValueAsString(cancelCommand);
         String topic = "iot/device/" + deviceId + "/ota";
