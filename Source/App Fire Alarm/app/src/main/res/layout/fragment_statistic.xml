@@ -1,14 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.statistic.StatisticFragment">
+    android:background="@color/background"
+    tools:context=".presentation.ui.user.statistic.StatisticFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/guideline1"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/statistic"
+            android:textColor="@color/text_primary"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Tab Layout for switching between Sensor and Notification -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabSelectedTextColor="@color/main"
+            app:tabIndicatorColor="@color/main"
+            app:tabTextColor="@color/gray"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="16dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintStart_toStartOf="@id/guideline1"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- Temperature Chart -->
+            <TextView
+                android:id="@+id/titleTemperature"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/temperature"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="8dp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartTemperature"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/titleTemperature"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Smoke Chart -->
+            <TextView
+                android:id="@+id/titleSmoke"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/smoke"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/chartTemperature"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartSmoke"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/titleSmoke"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Humidity Chart -->
+            <TextView
+                android:id="@+id/titleHumidity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/humidity"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/chartSmoke"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartHumidity"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/titleHumidity"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Fire Notification Chart -->
+            <TextView
+                android:id="@+id/titleFireNotification"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/fire_notification"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="8dp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartFireNotification"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/titleFireNotification"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Smoke Notification Chart -->
+            <TextView
+                android:id="@+id/titleSmokeNotification"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/smoke_notification"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/chartFireNotification"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartSmokeNotification"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/titleSmokeNotification"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <TextView
+        android:id="@+id/noValue"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Statistic"
-        android:textColor="@color/black"/>
+        android:text="@string/no_telemetry_found"
+        android:textColor="@color/text_secondary"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintHeight_percent="0.1"
+        android:textSize="15sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@id/guideline1"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"/>
 
-</FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.05"
+        android:orientation="vertical"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.95"
+        android:orientation="vertical"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

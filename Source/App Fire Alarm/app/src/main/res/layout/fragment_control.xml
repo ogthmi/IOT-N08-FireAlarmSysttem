@@ -4,21 +4,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.ui.control.ControlFragment"
+    tools:context=".presentation.ui.user.control.ControlFragment"
     android:background="@color/background">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/input"
+        android:padding="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_margin="15dp">
+
+        <ImageView
+            android:id="@+id/iconUser"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_user"
+            app:tint="@color/text_primary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="12dp"/>
+
+        <TextView
+            android:id="@+id/textUsername"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintTop_toTopOf="@id/iconUser"
+            app:layout_constraintStart_toEndOf="@id/iconUser"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/textDeviceId"/>
+
+        <TextView
+            android:id="@+id/textDeviceId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintTop_toBottomOf="@id/textUsername"
+            app:layout_constraintStart_toEndOf="@id/iconUser"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/iconUser"
+            android:layout_marginTop="4dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/b_ng_i_u_khi_n"
+        android:text="@string/dashboard"
         android:textColor="@color/text_primary"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         android:textSize="25sp"
         app:layout_constraintVertical_bias="0.02"
-        android:layout_marginHorizontal="20sp"/>
+        android:layout_marginHorizontal="15sp"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,7 +84,7 @@
             android:id="@+id/body"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="20sp"
+            android:layout_margin="15sp"
             android:columnCount="2"
             android:rowCount="3">
 
@@ -55,7 +107,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/nhi_t"
+                    android:text="@string/temperature"
                     android:textSize="10sp"
                     android:textColor="@color/text_primary"/>
 
@@ -64,6 +116,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="30sp"
+                    android:text="--"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -88,7 +141,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/m"
+                    android:text="@string/humidity"
                     android:textSize="10sp"
                     android:textColor="@color/text_primary"/>
 
@@ -97,6 +150,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="30sp"
+                    android:text="--"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -120,7 +174,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/c_m_bi_n_l_a"
+                    android:text="@string/fire"
                     android:textSize="10sp"
                     android:textColor="@color/text_primary"/>
 
@@ -129,6 +183,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="30sp"
+                    android:text="--"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -152,7 +207,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/n_ng_kh_i_adc"
+                    android:text="@string/smoke"
                     android:textSize="10sp"
                     android:textColor="@color/text_primary"/>
 
@@ -161,6 +216,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="30sp"
+                    android:text="--"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -185,7 +241,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/c_i_b_o"
+                    android:text="@string/buzzer"
                     android:textSize="10sp"
                     android:textColor="@color/text_primary"/>
 
@@ -198,17 +254,23 @@
                         android:id="@+id/switchAlarm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"/>
+                        android:checked="false"/>
 
                     <TextView
                         android:id="@+id/txtAlarm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bật"
+                        android:text="Tắt"
                         android:textSize="10sp"
                         android:textColor="@color/text_primary"
                         android:textStyle="bold" />
                 </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/alarmLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -232,7 +294,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/m_y_b_m"
+                    android:text="@string/pump"
                     android:textSize="10sp"
                     android:textColor="@color/text_primary"/>
 
@@ -245,17 +307,23 @@
                         android:id="@+id/switchPump"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"/>
+                        android:checked="false"/>
 
                     <TextView
                         android:id="@+id/txtPump"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bật"
+                        android:text="Tắt"
                         android:textSize="10sp"
                         android:textColor="@color/text_primary"
                         android:textStyle="bold" />
                 </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/pumpLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -279,7 +347,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Điều chỉnh"
+                    android:text="@string/adjust"
                     android:textSize="10sp"
                     android:layout_marginTop="20dp"
                     android:textColor="@color/text_primary"
