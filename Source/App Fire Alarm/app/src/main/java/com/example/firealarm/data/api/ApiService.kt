@@ -35,6 +35,42 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+    // Đăng nhập
+    @POST("api/v1/users/log-in")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): LoginResponse
+
+
+    // Devices
+    // Lấy danh sách thiết bị (User)
+    @GET("api/v1/devices/user")
+    suspend fun getDeviceByUser(): DeviceResponse
+
+    // Lấy danh sách tất cả thiết bị
+    @GET("api/v1/devices")
+    suspend fun getAllDevices(): DeviceResponse
+
+    // Tạo thiết bị mới
+    @POST("api/v1/devices")
+    suspend fun createDevice(
+        @Body request: CreateDeviceRequest
+    ): DeviceResponse
+
+
+    // Cập nhật thông tin thiết bị
+    @PUT("api/v1/devices")
+    suspend fun updateDevice(
+        @Query("deviceId") deviceId: String,
+        @Body request: UpdateDeviceRequest
+    ): DeviceResponse
+
+    // Xóa thiết bị
+    @DELETE("api/v1/devices")
+    suspend fun deleteDevice(
+        @Query("deviceId") deviceId: String
+    ): DeviceResponse
+
     @POST("api/mqtt/send-topic")
     suspend fun sendBuzzerControl(
         @Query("topic") topic: String,
