@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firealarm.data.websocket.WebViewStompManager
+import com.example.firealarm.domain.model.Status
 import com.example.firealarm.domain.model.Telemetry
 import com.example.firealarm.domain.usecase.SetBuzzerStateUseCase
 import com.example.firealarm.domain.usecase.SetPumpStateUseCase
@@ -34,7 +35,13 @@ class ControlViewModel @Inject constructor(
     private val _connectionStatus = MutableStateFlow(false)
     val connectionStatus: StateFlow<Boolean> = _connectionStatus.asStateFlow()
     
+    private val _notificationData = MutableStateFlow<String?>(null)
+    val notificationData: StateFlow<String?> = _notificationData.asStateFlow()
+    
     private var currentDeviceId: String? = null
+
+    private val _statusData = MutableStateFlow(Status())
+    val statusData: Flow<Status> = _statusData
     
     init {
         setupWebSocket()
@@ -59,6 +66,11 @@ class ControlViewModel @Inject constructor(
             _connectionStatus.value = isConnected
         }
         
+        // Setup callback để nhận notification từ WebSocket
+        webViewStompManager.setNotificationCallback { message ->
+            _notificationData.value = message
+        }
+        
         // Connect WebSocket
         connectWebSocket()
     }
@@ -78,54 +90,38 @@ class ControlViewModel @Inject constructor(
         super.onCleared()
         disconnectWebSocket()
     }
-//    private val _sensorData = MutableStateFlow(Sensor())
-//    val sensorData: Flow<Sensor> = _sensorData
-//
-//    private val _statusData = MutableStateFlow(Status())
-//    val statusData: Flow<Status> = _statusData
-//
-//    fun getSensor(){
-//        viewModelScope.launch((Dispatchers.IO)) {
-//            getSensorDataUseCase.execute()
-//                .collect { sensors -> _sensorData.value = sensors }
-//        }
-//    }
-//
-//    fun getStatus(){
-//        viewModelScope.launch((Dispatchers.IO)) {
-//            getStatusDataUseCase.execute()
-//                .collect { status -> _statusData.value = status }
-//        }
-//    }
-//
-//    fun toggleBuzzer(currentState: String, deviceId: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val newState = if (currentState == "ON") "OFF" else "ON"
-//            delay(1000)
-//            setBuzzerStateUseCase.execute(newState, deviceId).fold(
-//                onSuccess = {
-//                    Log.d("---Stattus", "Success")
-//                },
-//                onFailure = { error ->
-//                    // Handle error if needed
-//                }
-//            )
-//        }
-//    }
-//
-//    fun togglePump(currentState: String, deviceId: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val newState = if (currentState == "ON") "OFF" else "ON"
-//            delay(1000)
-//            setPumpStateUseCase.execute(newState, deviceId).fold(
-//                onSuccess = {
-//                    // Success
-//                },
-//                onFailure = { error ->
-//                    // Handle error if needed
-//                }
-//            )
-//        }
-//    }
 
+    fun toggleBuzzer(currentState: String, deviceId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newState = if (currentState == "ON") "OFF" else "ON"
+            delay(1000)
+            setBuzzerStateUseCase.execute(newState, deviceId).fold(
+                onSuccess = {
+                    Log.d("---Stattus", "Success")
+                },
+                onFailure = { error ->
+                    // Handle error if needed
+                }
+            )
+        }
+    }
+
+    fun togglePump(currentState: String, deviceId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newState = if (currentState == "ON") "OFF" else "ON"
+            delay(1000)
+            setPumpStateUseCase.execute(newState, deviceId).fold(
+                onSuccess = {
+                    // Success
+                },
+                onFailure = { error ->
+                    // Handle error if needed
+                }
+            )
+        }
+    }
+    
+    fun clearNotification() {
+        _notificationData.value = null
+    }
 }

@@ -43,7 +43,7 @@ class DeviceAdapter(
             binding.root.setOnClickListener {
                 onItemClick(device)
             }
-            
+
             binding.btnMenu.setOnClickListener { view ->
                 val popupMenu = PopupMenu(view.context, view)
                 popupMenu.menuInflater.inflate(R.menu.device_sub_menu, popupMenu.menu)

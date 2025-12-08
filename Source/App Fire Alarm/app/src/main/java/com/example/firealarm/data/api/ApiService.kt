@@ -13,11 +13,25 @@ import com.example.firealarm.data.model.user.UpdateUserRequest
 import com.example.firealarm.data.model.device.CreateDeviceRequest
 import com.example.firealarm.data.model.device.UpdateDeviceRequest
 import com.example.firealarm.data.model.user.UserInforResponse
+import com.example.firealarm.data.model.firmware.FirmwareResponse
+import com.example.firealarm.data.model.firmware.FirmwareUploadResponse
+import com.example.firealarm.data.model.firmware.UpdateFirmwareRequest
+import com.example.firealarm.data.model.firmware.FirmwareDeleteResponse
+import com.example.firealarm.data.model.firmware.OtaUpdateRequest
+import com.example.firealarm.data.model.firmware.OtaUpdateResponse
+import com.example.firealarm.data.model.firmware.OtaHistoryResponse
+import com.example.firealarm.data.model.statistic.SensorStatisticResponse
+import com.example.firealarm.data.model.statistic.NotificationStatisticResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -112,5 +126,64 @@ interface ApiService {
     suspend fun updateUser(
         @Body request: UpdateUserRequest
     ): UserResponse
+
+    // Firmware
+    // Lấy danh sách firmware versions
+    @GET("api/v1/firmware/versions")
+    suspend fun getFirmwareList(): FirmwareResponse
+
+    // Create firmware mới
+    @Multipart
+    @POST("api/v1/firmware/upload-and-create")
+    suspend fun uploadFirmware(
+        @Part file: MultipartBody.Part,
+        @Part("version") version: RequestBody,
+        @Part("versionNumber") versionNumber: RequestBody,
+        @Part("description") description: RequestBody
+    ): FirmwareUploadResponse
+
+    // Update firmware
+    @POST("api/v1/firmware/versions/{id}")
+    suspend fun updateFirmware(
+        @Path("id") id: Int,
+        @Body request: UpdateFirmwareRequest
+    ): FirmwareUploadResponse
+
+    // Delete firmware
+    @DELETE("api/v1/firmware/versions/{id}")
+    suspend fun deleteFirmware(
+        @Path("id") id: Int
+    ): FirmwareDeleteResponse
+
+    // OTA Update firmware for device
+    @POST("api/v1/firmware/ota/start")
+    suspend fun startOtaUpdate(
+        @Body request: OtaUpdateRequest
+    ): OtaUpdateResponse
+
+    // Get OTA update history for device
+    @GET("api/v1/firmware/history/{deviceId}")
+    suspend fun getOtaHistory(
+        @Path("deviceId") deviceId: String
+    ): OtaHistoryResponse
+
+    // Cancel OTA update for device
+    @POST("api/v1/firmware/ota/cancel")
+    suspend fun cancelOtaUpdate(
+        @Query("deviceId") deviceId: String
+    ): OtaUpdateResponse
+
+    // Statistics
+    // Get sensor statistics
+    @GET("api/v1/statistic/telemetry")
+    suspend fun getSensorStatistics(
+        @Query("deviceId") deviceId: String
+    ): SensorStatisticResponse
+
+    // Get notification statistics
+    @GET("api/v1/statistic/notification")
+    suspend fun getNotificationStatistics(
+        @Query("deviceId") deviceId: String
+    ): NotificationStatisticResponse
 }
 

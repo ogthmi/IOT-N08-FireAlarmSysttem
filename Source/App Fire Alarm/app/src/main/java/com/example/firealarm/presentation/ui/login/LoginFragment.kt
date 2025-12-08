@@ -108,6 +108,9 @@ class LoginFragment : Fragment() {
                             }
                             else{
                                 hasNavigated = true
+                                val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)
+                                bottomNav?.menu?.clear()
+                                bottomNav?.inflateMenu(R.menu.user_bottom_menu)
                                 findNavController().navigate(
                                     LoginFragmentDirections.actionLoginFragmentToChooseDeviceFragment(""),
                                     navOptions

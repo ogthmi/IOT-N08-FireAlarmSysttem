@@ -72,4 +72,25 @@
     <string name="device_information">Device information</string>
     <string name="_description">Description:</string>
     <string name="sensor_information">Sensor information</string>
+    <string name="current_firmware_version">Current firmware version</string>
+    <string name="choose_firmware_version">Choose firmware version</string>
+    <string name="update">Update</string>
+    <string name="no_firmware_versions_found">No firmware versions found</string>
+    <string name="firmware_versions">Firmware versions</string>
+    <string name="create_firmware">Create Firmware</string>
+    <string name="firmware_file">Firmware file</string>
+    <string name="no_file_selected">No file selected</string>
+    <string name="select_file">Select File</string>
+    <string name="firmware_information">Firmware information</string>
+    <string name="firmware_version">Firmware version</string>
+    <string name="e_g_1_0_0">e.g.1.0.0</string>
+    <string name="e_g_1">e.g.1</string>
+    <string name="firmware_version_number">Firmware version number</string>
+    <string name="release_at">Release at</string>
+    <string name="download_url">Download url</string>
+    <string name="status">Status</string>
+    <string name="fire_notification">Fire notification</string>
+    <string name="smoke_notification">Smoke notification</string>
+    <string name="no_telemetry_found">No telemetry found.</string>
+    <string name="name_device">Name device</string>
 </resources>

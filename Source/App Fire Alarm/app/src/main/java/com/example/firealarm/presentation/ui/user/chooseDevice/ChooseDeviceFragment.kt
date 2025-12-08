@@ -45,8 +45,8 @@ class ChooseDeviceFragment : Fragment() {
 
         val mes = args.mes
         if(mes.equals("fromSetting")){
-            binding.title.setText("Thay đổi thiết bị")
-            binding.btnContinue.setText("Thay đổi")
+            binding.title.setText("Change device")
+            binding.btnContinue.setText("Change")
             binding.closeBtn.visibility = View.VISIBLE
         }
 

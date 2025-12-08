@@ -1,4 +1,4 @@
-package com.example.firealarm.service
+package com.example.firealarm.presentation.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -59,7 +59,6 @@ class FireAlarmMonitoringService : Service() {
         super.onCreate()
         Log.d(TAG, "Service created")
         createNotificationChannel()
-        startForeground(NOTIFICATION_ID, createForegroundNotification())
         
         // Khởi tạo notification channel cho cảnh báo
         NotificationHelper.createNotificationChannel(this)
@@ -68,6 +67,14 @@ class FireAlarmMonitoringService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand called")
+        // Phải gọi startForeground() trong onStartCommand() để đảm bảo được gọi trong vòng 5 giây
+        try {
+            startForeground(NOTIFICATION_ID, createForegroundNotification())
+            Log.d(TAG, "startForeground() called successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error calling startForeground(): ${e.message}", e)
+        }
         return START_STICKY // Service sẽ tự động khởi động lại nếu bị kill
     }
 

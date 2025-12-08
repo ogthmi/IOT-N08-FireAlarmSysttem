@@ -63,9 +63,10 @@ class ListDeviceFragment : Fragment() {
         val userId = args.userId
         deviceAdapter = DeviceAdapter(
             onItemClick = { device ->
-                findNavController().navigate(ListDeviceFragmentDirections.actionListDeviceFragmentToDeviceDetailFragment2(
-                    device.deviceId, device.deviceName, device.description,
-                    device.thresholds[0].threshold.toFloat(), device.thresholds[1].threshold.toFloat()
+                findNavController().navigate(ListDeviceFragmentDirections.actionListDeviceFragmentToDetailDeviceFragment(
+                    device.deviceName, device.deviceId, device.description,
+                    device.thresholds[0].threshold.toFloat(),
+                    device.thresholds[1].threshold.toFloat()
                 ))
             },
             onEditClick = { device ->

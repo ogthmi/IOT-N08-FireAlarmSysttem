@@ -205,6 +205,7 @@ class WebViewStompManager @Inject constructor(
         return try {
             val type = object : TypeToken<List<TelemetryResponse>>() {}.type
             val responses = gson.fromJson<List<TelemetryResponse>>(json, type)
+            Log.d(TAG, responses.toString())
             responses?.map { it.toDomain() } ?: emptyList()
         } catch (e: Exception) {
             Log.e(TAG, "Error parsing telemetry JSON: ${e.message}", e)

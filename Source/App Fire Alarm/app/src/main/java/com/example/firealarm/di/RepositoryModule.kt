@@ -2,12 +2,16 @@ package com.example.firealarm.di
 
 import com.example.firealarm.data.repository.AuthRepositoryImpl
 import com.example.firealarm.data.repository.DeviceRepositoryImpl
+import com.example.firealarm.data.repository.FirmwareRepositoryImpl
 import com.example.firealarm.data.repository.StatusRepositoryImpl
+import com.example.firealarm.data.repository.StatisticRepositoryImpl
 import com.example.firealarm.data.repository.ThresholdRepositoryImpl
 import com.example.firealarm.data.repository.UserRepositoryImpl
 import com.example.firealarm.domain.repository.AuthRepository
 import com.example.firealarm.domain.repository.DeviceRepository
+import com.example.firealarm.domain.repository.FirmwareRepository
 import com.example.firealarm.domain.repository.StatusRepository
+import com.example.firealarm.domain.repository.StatisticRepository
 import com.example.firealarm.domain.repository.ThresholdRepository
 import com.example.firealarm.domain.repository.UserRepository
 import dagger.Binds
@@ -39,4 +43,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFirmwareRepository(impl: FirmwareRepositoryImpl): FirmwareRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindStatisticRepository(impl: StatisticRepositoryImpl): StatisticRepository
 }
