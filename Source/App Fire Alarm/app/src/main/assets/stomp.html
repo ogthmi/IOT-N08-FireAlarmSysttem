@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STOMP WebSocket</title>
+    <!-- SockJS library -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+    <!-- STOMP.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+</head>
+<body>
+    <script>
+        let stompClient = null;
+        let isConnected = false;
+        let reconnectAttempts = 0;
+        const MAX_RECONNECT_ATTEMPTS = 5;
+        let reconnectTimer = null;
+
+        // Hàm kết nối WebSocket
+        function connect(serverUrl, token) {
+            console.log('Connecting to:', serverUrl);
+            console.log('Token length:', token ? token.length : 0);
+            
+            try {
+                // Override XMLHttpRequest để thêm Authorization header vào HTTP requests
+                const originalSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
+                const originalOpen = XMLHttpRequest.prototype.open;
+                const originalSend = XMLHttpRequest.prototype.send;
+                
+                // Store để restore sau
+                let xhrOverrideActive = true;
+                let connectionId = Date.now();
+                
+                XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+                    this._connectionId = connectionId;
+                    this._headers = this._headers || new Map();
+                    this._url = url;
+                    
+                    // Gọi original open
+                    const result = originalOpen.apply(this, arguments);
+                    
+                    // Thêm Authorization header ngay sau khi open
+                    if (xhrOverrideActive && this._connectionId === connectionId) {
+                        try {
+                            // Set header trước khi send
+                            this._addAuthHeader = function() {
+                                if (!this._authHeaderAdded) {
+                                    originalSetRequestHeader.call(this, 'Authorization', 'Bearer ' + token);
+                                    this._authHeaderAdded = true;
+                                    console.log('Added Authorization header to XHR:', url);
+                                }
+                            };
+                        } catch (e) {
+                            console.warn('Could not prepare Authorization header:', e);
+                        }
+                    }
+                    
+                    return result;
+                };
+                
+                XMLHttpRequest.prototype.setRequestHeader = function(header, value) {
+                    // Lưu header
+                    if (!this._headers) {
+                        this._headers = new Map();
+                    }
+                    this._headers.set(header.toLowerCase(), value);
+                    
+                    // Nếu chưa có Authorization header, thêm vào
+                    if (xhrOverrideActive && this._connectionId === connectionId) {
+                        if (header.toLowerCase() === 'authorization') {
+                            // Nếu đã có, không làm gì
+                            this._authHeaderAdded = true;
+                        } else if (!this._headers.has('authorization')) {
+                            // Thêm Authorization header
+                            try {
+                                originalSetRequestHeader.call(this, 'Authorization', 'Bearer ' + token);
+                                this._headers.set('authorization', 'Bearer ' + token);
+                                this._authHeaderAdded = true;
+                                console.log('Added Authorization header via setRequestHeader');
+                            } catch (e) {
+                                console.warn('Could not set Authorization header:', e);
+                            }
+                        }
+                    }
+                    
+                    // Gọi original setRequestHeader
+                    return originalSetRequestHeader.apply(this, arguments);
+                };
+                
+                XMLHttpRequest.prototype.send = function(data) {
+                    // Đảm bảo Authorization header được thêm trước khi send
+                    if (this._addAuthHeader && typeof this._addAuthHeader === 'function') {
+                        this._addAuthHeader();
+                    }
+                    
+                    // Log tất cả headers trước khi send (để debug)
+                    if (this._headers && this._headers.size > 0) {
+                        console.log('XHR Headers before send:', Array.from(this._headers.entries()));
+                        console.log('XHR URL:', this._url);
+                    }
+                    
+                    // Gọi original send
+                    return originalSend.apply(this, arguments);
+                };
+                
+                console.log('XMLHttpRequest overridden for Authorization header');
+                console.log('Token to use:', token ? (token.substring(0, 20) + '...') : 'null');
+                
+                // Tạo SockJS connection
+                // Thêm token vào URL như query parameter để đảm bảo server nhận được
+                const urlWithToken = serverUrl + (serverUrl.indexOf('?') === -1 ? '?' : '&') + 'access_token=' + encodeURIComponent(token);
+                console.log('Connecting with URL (with token param):', urlWithToken.substring(0, 100) + '...');
+                
+                const socketOptions = {
+                    transports: ['websocket', 'xhr-streaming', 'xhr-polling']
+                };
+                // Sử dụng URL có token trong query parameter
+                const socket = new SockJS(urlWithToken, null, socketOptions);
+                
+                // Xử lý SockJS events
+                socket.onopen = function() {
+                    console.log('SockJS connection opened');
+                    console.log('Token used:', token ? (token.substring(0, 20) + '...') : 'null');
+                    // Restore XMLHttpRequest sau khi connection được thiết lập
+                    setTimeout(function() {
+                        XMLHttpRequest.prototype.setRequestHeader = originalSetRequestHeader;
+                        XMLHttpRequest.prototype.open = originalOpen;
+                        XMLHttpRequest.prototype.send = originalSend;
+                        xhrOverrideActive = false;
+                        console.log('Restored original XMLHttpRequest');
+                    }, 5000);
+                };
+                
+                socket.onclose = function(event) {
+                    console.log('SockJS connection closed:', event);
+                };
+                
+                socket.onerror = function(error) {
+                    console.error('SockJS error:', error);
+                    if (window.AndroidInterface) {
+                        window.AndroidInterface.onError('SockJS error: ' + (error.message || 'Unknown error'));
+                    }
+                };
+                
+                // Tạo STOMP client
+                stompClient = new StompJs.Client({
+                    webSocketFactory: () => socket,
+                    reconnectDelay: 5000,
+                    heartbeatIncoming: 4000,
+                    heartbeatOutgoing: 4000,
+                    debug: function(str) {
+                        console.log('STOMP:', str);
+                    },
+                    onConnect: function(frame) {
+                        console.log('STOMP Connected:', frame);
+                        isConnected = true;
+                        reconnectAttempts = 0;
+                        
+                        // Thông báo cho Android là đã kết nối
+                        if (window.AndroidInterface) {
+                            window.AndroidInterface.onConnected();
+                        }
+                        
+                        // Subscribe to telemetry
+                        subscribeTelemetry();
+                        
+                        // Subscribe to notification
+                        subscribeNotification();
+                    },
+                    onStompError: function(frame) {
+                        console.error('STOMP error:', frame);
+                        console.error('STOMP error headers:', frame.headers);
+                        console.error('STOMP error body:', frame.body);
+                        isConnected = false;
+                        
+                        const errorMsg = frame.headers['message'] || frame.body || 'STOMP error';
+                        if (window.AndroidInterface) {
+                            window.AndroidInterface.onError(errorMsg);
+                        }
+                    },
+                    onWebSocketClose: function(event) {
+                        console.log('WebSocket closed:', event);
+                        console.log('Close code:', event.code);
+                        console.log('Close reason:', event.reason);
+                        isConnected = false;
+                        
+                        if (window.AndroidInterface) {
+                            window.AndroidInterface.onDisconnected();
+                        }
+                        
+                        // Tự động reconnect nếu chưa đạt max attempts và không phải là disconnect thủ công
+                        if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS && event.code !== 1000) {
+                            reconnectAttempts++;
+                            console.log('Attempting to reconnect... (' + reconnectAttempts + '/' + MAX_RECONNECT_ATTEMPTS + ')');
+                            reconnectTimer = setTimeout(function() {
+                                connect(serverUrl, token);
+                            }, 5000);
+                        }
+                    },
+                    onWebSocketError: function(event) {
+                        console.error('WebSocket error:', event);
+                        isConnected = false;
+                        
+                        if (window.AndroidInterface) {
+                            window.AndroidInterface.onError('WebSocket error: ' + (event.message || 'Unknown error'));
+                        }
+                    }
+                });
+                
+                // Set headers với Authorization token
+                stompClient.configure({
+                    connectHeaders: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                // Kích hoạt STOMP client
+                stompClient.activate();
+            } catch (e) {
+                console.error('Error creating connection:', e);
+                if (window.AndroidInterface) {
+                    window.AndroidInterface.onError('Connection error: ' + e.message);
+                }
+            }
+        }
+        
+        // Subscribe to telemetry topic
+        function subscribeTelemetry() {
+            if (stompClient && isConnected) {
+                console.log('SubscribeTelemetry: Attempting to subscribe to /user/data');
+                try {
+                    const destination = '/user/data';
+                    
+                    const subscription = stompClient.subscribe(destination, function(message) {
+                        try {
+                            const messageBody = message.body;
+                            console.log('SubscribeTelemetry: Received telemetry body:', messageBody);
+                            if (window.AndroidInterface) {
+                                window.AndroidInterface.onTelemetryReceived(message.body);
+                            } else {
+                                console.warn('SubscribeTelemetry: AndroidInterface not available');
+                            }
+                        } catch (e) {
+                            console.error('SubscribeTelemetry: Error processing telemetry:', e);
+                            console.error('SubscribeTelemetry: Error stack:', e.stack);
+                            if (window.AndroidInterface) {
+                                window.AndroidInterface.onError('Error processing telemetry: ' + e.message);
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.error('SubscribeTelemetry: Error creating subscription:', e);
+                    if (window.AndroidInterface) {
+                        window.AndroidInterface.onError('Error subscribing to telemetry: ' + e.message);
+                    }
+                }
+            } else {
+                console.warn('SubscribeTelemetry: Cannot subscribe - stompClient:', !!stompClient, 'isConnected:', isConnected);
+            }
+        }
+        
+        // Subscribe to notification topic
+        function subscribeNotification() {
+            if (stompClient && isConnected) {
+                stompClient.subscribe('/user/notification', function(message) {
+                    try {
+                        console.log('Received notification:', message.body);
+                        if (window.AndroidInterface) {
+                            window.AndroidInterface.onNotificationReceived(message.body);
+                        }
+                    } catch (e) {
+                        console.error('Error processing notification:', e);
+                        if (window.AndroidInterface) {
+                            window.AndroidInterface.onError('Error processing notification: ' + e.message);
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Hàm ngắt kết nối
+        function disconnect() {
+            if (reconnectTimer) {
+                clearTimeout(reconnectTimer);
+                reconnectTimer = null;
+            }
+            
+            if (stompClient && isConnected) {
+                stompClient.deactivate();
+                isConnected = false;
+                console.log('Disconnected');
+            }
+        }
+        
+        // Hàm kiểm tra trạng thái kết nối
+        function checkConnection() {
+            return isConnected && stompClient && stompClient.connected;
+        }
+        
+        // Export functions để Android có thể gọi
+        window.StompWebSocket = {
+            connect: connect,
+            disconnect: disconnect,
+            isConnected: checkConnection
+        };
+        
+        console.log('STOMP WebSocket script loaded');
+    </script>
+</body>
+</html>
+

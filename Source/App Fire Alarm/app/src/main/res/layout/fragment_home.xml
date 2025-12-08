@@ -4,9 +4,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.ui.home.HomeFragment"
+    tools:context=".presentation.ui.user.home.HomeFragment"
     android:background="@color/background"
     android:padding="15dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/input"
+        android:padding="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/iconUser"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_user"
+            app:tint="@color/text_primary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textUsername"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toTopOf="@id/iconUser"
+            app:layout_constraintStart_toEndOf="@id/iconUser"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/textDeviceId"/>
+
+        <TextView
+            android:id="@+id/textDeviceId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@id/textUsername"
+            app:layout_constraintStart_toEndOf="@id/iconUser"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/iconUser"
+            android:layout_marginTop="4dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btnCallRoot"
@@ -14,7 +66,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:background="@drawable/circle_primary"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,7 +137,7 @@
         android:id="@+id/titleHelp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/khi_b_n_th_y_s_c_ch_y_tai_n_n"
+        android:text="@string/when_you_see_a_fire_or_an_accident"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/text_primary"
@@ -99,7 +151,7 @@
         android:id="@+id/subtitleHelp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nh_n_g_i_114_b_o_cho_l_c_l_ng_c_nh_s_t_pccc_v_cnch"
+        android:text="@string/dial_114_to_report_to_the_fire_prevention_and_rescue_police_force"
         android:textSize="14sp"
         android:textColor="@color/text_secondary"
         android:gravity="center"
