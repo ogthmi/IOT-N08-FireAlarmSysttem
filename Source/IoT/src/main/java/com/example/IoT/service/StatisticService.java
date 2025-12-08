@@ -16,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -44,10 +41,15 @@ public class StatisticService {
                         ));
 
         List<Long> sensorIds = new ArrayList<>(sensorEntityMap.keySet());
-        LocalDateTime fourMinutesAgo = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).minusMinutes(4);
+        int limit = sensorIds.size() * 120;
 
-        List<TelemetryEntity> telemetryEntities = telemetryRepository
-                .findAllBySensorIdInAndCreatedAtAfter(sensorIds, fourMinutesAgo);
+        List<TelemetryEntity> telemetryEntities =
+                telemetryRepository.findLatestForSensors(sensorIds, limit);
+
+        telemetryEntities = telemetryEntities.stream()
+                .sorted(Comparator.comparing(TelemetryEntity::getCreatedAt))
+                .toList();
+
 
         List<TemperatureDTO> temperatureDTOS = new ArrayList<>();
         List<SmokeDTO> smokeDTOS = new ArrayList<>();
